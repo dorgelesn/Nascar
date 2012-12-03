@@ -37,7 +37,7 @@ clean:
 # LES REGLES DE DEPENDANCE. Certaines sont implicites mais je recommande d'en 
 # mettre une par fichier source. 
 #-----------------------------------------------------------------------------
-main.o:main.c voiture.h equipe.h circuit.h system.h 
+main.o:main.c main.h voiture.h equipe.h circuit.h system.h 
 voiture.o:voiture.c voiture.h equipe.h
 equipe.o:equipe.c equipe.h voiture.h
 system.o:system.c system.h

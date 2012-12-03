@@ -1,9 +1,10 @@
 #include "circuit.h"
 
-void creationCircuit()
+Circuit* creationCircuit()
 {
-	Circuit *circuit;
+	Circuit *circuit = malloc(sizeof(Circuit));
 	circuit->longueur = 2000;
 	//Ligne de puits de 1900 à 2000
 	circuit->ligneDePuit = 100;
+	return circuit;
 }

@@ -2,14 +2,19 @@
 #define EQUIPE
 
 #include "voiture.h"
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
 
+typedef struct Voiture Voiture;
 typedef struct Equipe Equipe;
 struct Equipe{
 	int num;
-	struct Voiture *voiture1;	
-	struct Voiture *voiture2;
+	Voiture *voiture1;	
+	Voiture *voiture2;
 };
 
 void creationEquipes();
-void initEquipe(int numEquipe);
+Equipe* initEquipe(int numEquipe);
+void freeEquipe(Equipe* equipe); 
 #endif

@@ -3,6 +3,7 @@
 
 #include "equipe.h"
 
+typedef struct Equipe Equipe;
 typedef struct Voiture Voiture;
 struct Voiture{
 	int acceleration;

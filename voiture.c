@@ -1,11 +1,11 @@
 #include "voiture.h"
 
-void creationVoitures(Equipe *equipe)
+void creationVoitures(struct Equipe *equipe)
 {
 	int iterVoiture;
 	for(iterVoiture=1; 	iterVoiture<3; iterVoiture++)
 	{
-		Voiture *voiture;
+		Voiture *voiture = malloc(sizeof(Voiture));
 		printf("création voiture %d, de l'équipe %d\n",iterVoiture,equipe->num);
 		voiture->acceleration = aleatoire(50,100);
 		voiture->vitesseMax = aleatoire(200,240);
