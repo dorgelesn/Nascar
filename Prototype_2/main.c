@@ -3,18 +3,7 @@
 #define NbEquipe 21
 
 static Circuit *circuit;
-static Equipe **equipes;
-
-void creationEquipes(){
-	int numEquipe;
-	equipes = newEquipes(NbEquipe); 
-	for(numEquipe=1; numEquipe<=NbEquipe; numEquipe++)
-	{
-		equipes[numEquipe-1] = newEquipe(numEquipe);
-		equipes[numEquipe-1]->voiture1 = newVoiture(numEquipe);
-		equipes[numEquipe-1]->voiture2 = newVoiture(numEquipe);
-	}
-}
+static Equipe** equipes;
 
 int main(int argc, char** argv)
 {
@@ -23,7 +12,13 @@ int main(int argc, char** argv)
 	printf("CREATION DU CIRCUIT\n");
 	circuit = newCircuit();
 	printf("CREATION DES ÉQUIPES\n");
-	creationEquipes();
+	equipes = creationEquipes(NbEquipe);
+	printf("CREATION DES ÉQUIPES\n");
+	clear();
+	printf("INITIALISATION TERMINÉE\n");
+	printf("DEBUT DE LA PHASE DE QUALIFICATION \n");
+	
+	printf("FIN DE LA PHASE DE QUALIFICATION \n");
 
 	freeMain();
 	return 0;
@@ -31,6 +26,10 @@ int main(int argc, char** argv)
 
 void freeMain()
 {
+	printf("SUPPRESSION DES COMPOSANTS\n");
 	freeCircuit(circuit);
 	freeEquipes(equipes,NbEquipe);
+	clear();
+	printf("SUPPRESSION DES COMPOSANTS TERMINÉE\n");
+	printf("\nà bientôt pour une nouvelle course de Nascar\n");
 }

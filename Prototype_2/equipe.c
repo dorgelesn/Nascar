@@ -15,6 +15,19 @@ Equipe* newEquipe(int numEquipe)
 	return equipe;
 }
 
+Equipe** creationEquipes(int nbEquipe){
+	int numEquipe;
+	Equipe **equipes = newEquipes(nbEquipe); 
+	for(numEquipe=1; numEquipe<=nbEquipe; numEquipe++)
+	{
+		equipes[numEquipe-1] = newEquipe(numEquipe);
+		equipes[numEquipe-1]->voiture1 = newVoiture(numEquipe);
+		equipes[numEquipe-1]->voiture2 = newVoiture(numEquipe);
+	}
+	return equipes;
+}
+
+
 void freeEquipe(Equipe* equipe)
 {
 	if(equipe != NULL)
@@ -36,3 +49,4 @@ void freeEquipes(Equipe** equipes, int nbEquipe)
 		free(equipes);
 	}
 }
+

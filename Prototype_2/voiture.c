@@ -21,3 +21,25 @@ void freeVoiture(Voiture* voiture)
 		free(voiture);
 	}
 }
+
+Voiture* meilleureVoiture(Voiture* v1, Voiture* v2)
+{
+	if(!(v1 && v2)) return NULL;
+	//La meilleure voiture est la plus rapide
+	if(v1->vitesseMax > v2->vitesseMax)
+		return v1;
+	else if(v2->vitesseMax > v1->vitesseMax)
+		return v2;
+	//Les vitesses sont les mêmes on compare les accelerations
+	if(v1->acceleration > v2->acceleration)
+		return v1;
+	else if(v2->acceleration > v1->acceleration)
+		return v2;
+	//Si les accelerations sont égales on choisit par defaut v1;
+	return v1;
+
+
+
+
+
+}

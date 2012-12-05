@@ -16,7 +16,6 @@ typedef struct Circuit Circuit;
 typedef struct Voiture Voiture;
 
 
-void creationEquipes();
 void freeMain();
 int main(int argc, char** argv);
 #endif

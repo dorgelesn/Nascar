@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <stdio.h>
 
+
 typedef struct Voiture Voiture;
 typedef struct Equipe Equipe;
 struct Equipe{
@@ -16,6 +17,7 @@ struct Equipe{
 
 Equipe** newEquipes(int nbEquipe);
 Equipe* newEquipe(int numEquipe);
+Equipe** creationEquipes(int nbEquipe);
 void freeEquipe(Equipe* equipe); 
 void freeEquipes(Equipe** equipes, int nbEquipe); 
 #endif

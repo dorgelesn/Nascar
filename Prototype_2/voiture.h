@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-
 typedef enum ETAT ETAT;
 enum ETAT{arret, acceleration, max, stand};
 typedef struct Voiture Voiture;
@@ -20,5 +19,6 @@ struct Voiture{
 
 Voiture* newVoiture(int numEquipe);
 void freeVoiture(Voiture *voiture);
+Voiture* meilleureVoiture(Voiture* v1, Voiture* v2);
 
 #endif
