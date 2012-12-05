@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "semaphore.c"
 #include "system.h"
 #include "voiture.h"
 #include "circuit.h"
