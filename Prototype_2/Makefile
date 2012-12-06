@@ -21,7 +21,7 @@ LDFLAGS= $(LIBRARY_PATH) -o
 LIBS=  
 
 # Les fichiers sources de l'application
-FILES= main.c circuit.c voiture.c system.c equipe.c
+FILES= main.c circuit.c voiture.c system.c equipe.c section.c
 
 #-----------
 # LES CIBLES
@@ -41,7 +41,8 @@ main.o:main.c main.h voiture.h equipe.h circuit.h system.h
 voiture.o:voiture.c voiture.h equipe.h
 equipe.o:equipe.c equipe.h voiture.h
 system.o:system.c system.h
-circuit.o:circuit.c circuit.h
+circuit.o:circuit.c circuit.h section.h
+section.o:section.c section.h voiture.h
 
 #---------------------------------
 # REGLES DE COMPILATION IMPLICITES

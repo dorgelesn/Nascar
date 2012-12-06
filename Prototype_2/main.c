@@ -19,6 +19,11 @@ void creationFils(){
 	}
 }
 
+void course(){
+	
+}
+
+
 int main(int argc, char** argv)
 {
 	printf("INITIALISATION DE L'ALÉATOIRE\n");
@@ -35,9 +40,7 @@ int main(int argc, char** argv)
 	creationFils();
 	if(pere){for(i=0; i<21; i++)V(0);}
 	else{P(0);}
-	
 	if(pere)printf("DEBUT DE LA PHASE DE QUALIFICATION \n");
-	if(pere)printf("LES ÉQUIPES CHOISISSENT LEUR REPRÉSENTANT \n");
 	if(pere)printf("FIN DE LA PHASE DE QUALIFICATION \n");
 
 	if(pere)freeMain();

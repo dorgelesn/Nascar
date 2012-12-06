@@ -4,10 +4,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "section.h"
+
+
+typedef struct Section Section;
 typedef struct Circuit Circuit;
 struct Circuit{
 	int longueur;
-	int ligneDePuit;
+	Section** sections;
 };
 
 Circuit* newCircuit();
