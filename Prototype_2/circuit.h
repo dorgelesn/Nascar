@@ -17,4 +17,6 @@ struct Circuit{
 Circuit* newCircuit();
 void freeCircuit(Circuit *circuit);
 
+void getClassement(Circuit* circuit);
+
 #endif

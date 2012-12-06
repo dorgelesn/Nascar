@@ -5,6 +5,9 @@
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
 
 #include "semaphore.c"
 #include "system.h"
@@ -18,6 +21,7 @@ typedef struct Voiture Voiture;
 
 
 void freeMain();
+void run(Voiture* voiture);
 int main(int argc, char** argv);
 #endif
 

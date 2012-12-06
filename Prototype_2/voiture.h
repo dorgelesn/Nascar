@@ -2,23 +2,23 @@
 #define VOITURE
 
 #include "system.h"
+#include "section.h"
 #include <stdlib.h>
 #include <stdio.h>
 
-typedef enum ETAT ETAT;
-enum ETAT{arret, acceleration, max, stand};
+#define VITESSE_MAX 210
+
+typedef struct Section Section;
 typedef struct Voiture Voiture;
 struct Voiture{
 	int numEquipe;
-	int acceleration;
+	int numVoiture;
 	int vitesseMax;
-	int etatPneu;;
-	int etatEssence;
-	ETAT etat;
+	int nbTourEffectue;
+	int numSection;
 };
 
-Voiture* newVoiture(int numEquipe);
+Voiture* newVoiture(int numEquipe, int numVoiture);
 void freeVoiture(Voiture *voiture);
-Voiture* meilleureVoiture(Voiture* v1, Voiture* v2);
 
 #endif

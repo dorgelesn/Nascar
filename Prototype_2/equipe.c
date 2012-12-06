@@ -7,7 +7,6 @@ Equipe** newEquipes(int nbEquipe)
 
 Equipe* newEquipe(int numEquipe)
 {
-	printf("Création de l'équipe %d\n",numEquipe);
 	Equipe *equipe = malloc(sizeof(Equipe));
 	equipe->num = numEquipe;
 	equipe->voiture1 = NULL;
@@ -21,8 +20,8 @@ Equipe** creationEquipes(int nbEquipe){
 	for(numEquipe=1; numEquipe<=nbEquipe; numEquipe++)
 	{
 		equipes[numEquipe-1] = newEquipe(numEquipe);
-		equipes[numEquipe-1]->voiture1 = newVoiture(numEquipe);
-		equipes[numEquipe-1]->voiture2 = newVoiture(numEquipe);
+		equipes[numEquipe-1]->voiture1 = newVoiture(numEquipe,1);
+		equipes[numEquipe-1]->voiture2 = newVoiture(numEquipe,2);
 	}
 	return equipes;
 }
@@ -32,7 +31,6 @@ void freeEquipe(Equipe* equipe)
 {
 	if(equipe != NULL)
 	{
-		printf("Suppression de l'équipe %d\n",equipe->num);
 		freeVoiture(equipe->voiture1);
 		freeVoiture(equipe->voiture2);
 		free(equipe);

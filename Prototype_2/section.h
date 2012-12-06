@@ -1,5 +1,5 @@
 #ifndef SECTION
-#define SECTIOn
+#define SECTION
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,11 +8,12 @@
 typedef struct Voiture Voiture;
 typedef struct Section Section;
 struct Section{
+	int numSection;
 	Voiture* voitureGauche;
 	Voiture* voitureDroite;
 };
 
-Section* newSection();
+Section* newSection(int numSection);
 void freeSection(Section *Section);
 void freeSections(Section **Sections, int longueur);
 int entrerSection(Section* section, Voiture* voiture);
