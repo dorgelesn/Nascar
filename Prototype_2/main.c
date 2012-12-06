@@ -17,15 +17,19 @@ void run(Voiture* voiture){
 	int sectionActuelle;
 	int i=0;
 	int temps = tempsDeplacement(voiture);	
+	if(voiture->numEquipe =1 && voiture->numVoiture==1)printf("7\n"); 
 	while(voiture->nbTourEffectue != 10)
 	{
 
+		if(voiture->numEquipe =1 && voiture->numVoiture==1)printf("8\n"); 
 		sectionVisee = voiture->numSection +1;
 		sectionActuelle = voiture->numSection;
 		if(sectionVisee == circuit->longueur) sectionVisee =0;
 
+		if(voiture->numEquipe =1 && voiture->numVoiture==1)printf("9\n"); 
 		P(lockCIRCUIT);
 		circuit = ((Circuit*)ptr_MEM);
+		if(voiture->numEquipe =1 && voiture->numVoiture==1)printf("10\n"); 
 		if(entrerSection(circuit->sections[sectionVisee],voiture))
 		{
 			sortirSection(circuit->sections[sectionActuelle],voiture);
@@ -52,7 +56,7 @@ int main(int argc, char** argv)
 	lockFILS    = circuit->longueur;
 	lockMAIN    = circuit->longueur+1;
 	lockCIRCUIT = circuit->longueur+2;
-	initSem(circuit->longueur+3,"Section de courses",0);
+	initSem(circuit->longueur+3,"AZERTYUIOPQSDFGHJKLMWXCVBN",0);
 	for(i=0; i<circuit->longueur;i++){V(i);V(i);}
 	V(lockCIRCUIT);
 
@@ -71,19 +75,25 @@ int main(int argc, char** argv)
 		{
 			if(forkNroll() == 0)
 			{
+				if(i==0&&j==0)printf("1\n");
 				V(lockMAIN);
 				P(lockFILS);
+				if(i==0&&j==0)printf("2\n");
 				if ((id_MEM = shmget(CLEF, sizeof(Circuit*), 0666)) < 0)
 					erreur("shmget",1);
 				if ((ptr_MEM = shmat(id_MEM, NULL, 0)) == (void*) -1) 
 					erreur("shmat",1);
 
+				if(i==0&&j==0)printf("3\n");
 				P(lockCIRCUIT);
 				circuit = ((Circuit*)ptr_MEM);
 				V(lockCIRCUIT);
+				if(i==0&&j==0)printf("4\n");
 
+				if(i==0&&j==0)printf("5\n");
 				V(lockMAIN);
 				P(lockFILS);
+				if(i==0&&j==0)printf("6\n");
 
 				if(j==0)run(equipes[i]->voiture1);
 				else run(equipes[i]->voiture2);
