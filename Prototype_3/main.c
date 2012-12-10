@@ -4,20 +4,49 @@
 
 Circuit *circuit;
 Equipe** equipes;
-static pthread_mutex_t* sectionVerrou;
-pthread_mutex_t classementVerrou;
-pthread_t pthread_id[NbEquipe*2];
 Voiture** classement;
 int indexClassement;
 
+pthread_mutex_t* sectionVerrou;
+pthread_mutex_t  pauseVerrou[NbEquipe*2+1];
+pthread_mutex_t  classementVerrou;
+
+pthread_t pthread_classement;
+pthread_t pthread_id[NbEquipe*2];
+
 int LOCKFILS;
 int LOCKMAIN;
+
+void signalSIGTSTP(int num)
+{
+	 int i;
+	 if(num == SIGTSTP)
+	 {
+		for(i=0; i<NbEquipe*2+1; i++) pthread_mutex_lock(&pauseVerrou[i]);
+		sleep(5);
+		for(i=0; i<NbEquipe*2+1; i++) pthread_mutex_unlock(&pauseVerrou[i]);
+		signal(SIGTSTP,signalSIGTSTP);
+	 }
+}
+
+void signalSIGINT(int num)
+{
+	 int i;
+	 if(num == SIGINT)
+	 {
+		  freeMain();
+		  printf("Vous avez demandé l'arret de la course avant sa terminaison Au revoir\n");	
+		  kill(getpid(),SIGINT);
+	 }
+}
 
 void* printClassement()
 {
 	 while(1)
 	 {
+		  pthread_mutex_lock(&pauseVerrou[NbEquipe*2]);
 		  getClassement(circuit);
+		  pthread_mutex_unlock(&pauseVerrou[NbEquipe*2]);
 		  usleep(200000);
 	 }
 }
@@ -28,10 +57,13 @@ void* run(void* arg){
 	 int sectionActuelle;
 	 int i=0;
 	 int temps = tempsDeplacement(voiture);	
+	 int id = ((voiture->numEquipe-1)*2)+(voiture->numVoiture -1);
 	 printf("Positionnement de la voiture %d de l'équipe %d\n",voiture->numVoiture,voiture->numEquipe);
-	 getClassement(circuit);
+	 V(LOCKMAIN);
+	 P(LOCKFILS);
 	 while(voiture->nbTourEffectue <1)
 	 {
+		  pthread_mutex_lock(&pauseVerrou[id]);
 		  sectionVisee = voiture->numSection +1;
 		  sectionActuelle = voiture->numSection;
 		  if(sectionVisee >= circuit->longueur) sectionVisee =0;
@@ -40,6 +72,7 @@ void* run(void* arg){
 			   sortirSection(circuit->sections[sectionActuelle],voiture,&sectionVerrou[sectionActuelle]);
 			   if(sectionVisee ==0)voiture->nbTourEffectue ++;
 		  }
+		  pthread_mutex_unlock(&pauseVerrou[id]);
 		  usleep(temps);
 	 }
 	 printf("La voiture %d de l'équipe %d est arrivée\n",voiture->numVoiture,voiture->numEquipe);
@@ -58,10 +91,14 @@ int main(int argc, char** argv)
 	 printf("INITIALISATION DE L'ALÉATOIRE\n");
 	 srand(time(NULL));
 
-	 printf("INITIALISATION DES SEMAPHORES");
+	 printf("INITIALISATION DES SEMAPHORES\n");
+	 signal(SIGINT,signalSIGINT);
+	 signal(SIGTSTP,signalSIGTSTP);
+
+	 printf("INITIALISATION DES SEMAPHORES\n");
 	 initSem(2,"AZERTYUIOP",NULL);
 	 LOCKFILS=0;
-	 LOCKFILS=1;
+	 LOCKMAIN=1;
 
 	 printf("CREATION DU CIRCUIT\n");
 	 circuit = newCircuit();
@@ -89,7 +126,9 @@ int main(int argc, char** argv)
 	 }
 	 printf("DEPART DE LA COURSE\n");
 
-	 pthread_t pthread_classement;
+	 for(i=0;i<NbEquipe*2; i++)P(LOCKMAIN);
+	 for(i=0;i<NbEquipe*2; i++)V(LOCKFILS);
+
 	 if(pthread_create(&pthread_classement, NULL, printClassement,NULL))
 		  erreur("pthread_create",1);
 
@@ -104,8 +143,8 @@ int main(int argc, char** argv)
 	 printf("Classement de la course\n");
 	 for(i=0; i<NbEquipe*2; i+=2)
 	 {
-		printf("%d:%d \t",classement[i]->numEquipe,classement[i]->numVoiture);
-		printf("%d:%d \n",classement[i+1]->numEquipe,classement[i+1]->numVoiture);
+		  printf("%d:%d \t",classement[i]->numEquipe,classement[i]->numVoiture);
+		  printf("%d:%d \n",classement[i+1]->numEquipe,classement[i+1]->numVoiture);
 	 }
 	 freeMain();
 	 return 0;

@@ -9,6 +9,7 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <pthread.h>
+#include <signal.h>
 
 #include "semaphore.c"
 #include "system.h"
@@ -20,6 +21,7 @@ typedef struct Equipe Equipe;
 typedef struct Circuit Circuit;
 typedef struct Voiture Voiture;
 
+void signalSIGINT(int num); 
 void freeMain();
 void* run(void* arg);
 int main(int argc, char** argv);
