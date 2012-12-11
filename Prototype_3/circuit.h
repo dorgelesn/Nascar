@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 #include "section.h"
-
+#include "system.h"
 
 typedef struct Section Section;
 typedef struct Circuit Circuit;
