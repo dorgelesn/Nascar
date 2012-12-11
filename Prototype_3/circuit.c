@@ -22,28 +22,76 @@ void getClassement(Circuit* circuit)
 {
 	//clear();
 	int i,j;
-	Voiture* tmpVoiture;
+	Voiture* tmpVoiture1;
+	Voiture* tmpVoiture2;
 	Section* tmpSection;
-	int step = 5;
-	for(i=0; i<circuit->longueur;i+=step)
-	{
-		for(j=0; j<step; j++)
+
+
+	for(i=0; i<25; i++){
+		fondVert();
+	}
+	printf("\n");
+	
+	
+	for(j=0; j<2; j++){
+		for(i=0; i<25;i++)
 		{
-			if(i+j < circuit->longueur)
-			{
-				tmpSection = circuit->sections[i+j];
-				tmpVoiture = tmpSection->voitureGauche;
-				if(tmpVoiture == NULL) printf("XXXX\t");
-				else printf("%d:%d\t",tmpVoiture->numEquipe,tmpVoiture->numVoiture); 
-				tmpVoiture = tmpSection->voitureDroite;
-				if(tmpVoiture == NULL) printf("XXXX\t");
-				else printf("%d:%d\t",tmpVoiture->numEquipe,tmpVoiture->numVoiture); 
-			}
+			tmpSection = circuit->sections[i];
+			if( j%2 == 0 )
+				tmpVoiture1 = tmpSection->voitureGauche;
+			else tmpVoiture1 = tmpSection->voitureDroite;
+		 
+			if(tmpVoiture1 == NULL) fondGrisVide();
+			else fondGris(tmpVoiture1->numEquipe, tmpVoiture1->numVoiture);
 		}
+	}
+
+	for(i=0; i<24; i++){
+		
+		tmpSection = circuit->sections[99-i];
+		tmpVoiture1 = tmpSection->voitureGauche;
+		tmpVoiture2 = tmpSection->voitureDroite;
+
+		if(tmpVoiture1 == NULL) fondGrisVide();
+		else fondGris(tmpVoiture1->numEquipe, tmpVoiture1->numVoiture);
+		if(tmpVoiture2 == NULL) fondGrisVide();
+		else fondGris(tmpVoiture2->numEquipe, tmpVoiture2->numVoiture);
+		
+		for(j=0; j<21; j++){
+			fondVert();
+		}
+		
+		tmpSection = circuit->sections[26+i];
+		tmpVoiture1 = tmpSection->voitureGauche;
+		tmpVoiture2 = tmpSection->voitureDroite;
+			
+		if(tmpVoiture1 == NULL) fondGrisVide();
+		else fondGris(tmpVoiture1->numEquipe, tmpVoiture1->numVoiture);
+		if(tmpVoiture2 == NULL) fondGrisVide();
+		else fondGris(tmpVoiture2->numEquipe, tmpVoiture2->numVoiture);
 		printf("\n");
 	}
-	printf("\n\n\n\n");
+	
+	for(j=0; j<2; j++){
+		for(i=75; i>50;i--)
+		{
+			tmpSection = circuit->sections[i];
+			if( j%2 == 0 )
+				tmpVoiture1 = tmpSection->voitureGauche;
+			else tmpVoiture1 = tmpSection->voitureDroite;
+		 
+			if(tmpVoiture1 == NULL) fondGrisVide();
+			else fondGris(tmpVoiture1->numEquipe, tmpVoiture1->numVoiture);
+		}
+	}
+	
+	for(i=0; i<25; i++){
+		fondVert();
+	}
+	printf("\n");
+
 }
+
 
 
 
