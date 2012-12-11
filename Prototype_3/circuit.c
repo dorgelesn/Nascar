@@ -20,7 +20,7 @@ void freeCircuit(Circuit *circuit)
 
 void getClassement(Circuit* circuit)
 {
-	//clear();
+	clear();
 	int i,j;
 	Voiture* tmpVoiture1;
 	Voiture* tmpVoiture2;
@@ -44,6 +44,7 @@ void getClassement(Circuit* circuit)
 			if(tmpVoiture1 == NULL) fondGrisVide();
 			else fondGris(tmpVoiture1->numEquipe, tmpVoiture1->numVoiture);
 		}
+		printf("\n");
 	}
 
 	for(i=0; i<24; i++){
@@ -83,6 +84,7 @@ void getClassement(Circuit* circuit)
 			if(tmpVoiture1 == NULL) fondGrisVide();
 			else fondGris(tmpVoiture1->numEquipe, tmpVoiture1->numVoiture);
 		}
+		printf("\n");
 	}
 	
 	for(i=0; i<25; i++){

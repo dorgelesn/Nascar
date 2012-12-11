@@ -10,7 +10,7 @@ void fondGris(int equipe, int voiture){
 }
 
 
-void fondGrisVide(){printf("\033[47m      \033[0m");}
+void fondGrisVide(){printf("\033[47m     \033[0m");}
 
 int aleatoire(int a, int b)
 {
