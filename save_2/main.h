@@ -11,7 +11,6 @@
 #include <pthread.h>
 #include <signal.h>
 
-#include "menu.h"
 #include "stand.h"
 #include "semaphore.c"
 #include "system.h"

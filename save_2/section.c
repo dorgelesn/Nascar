@@ -6,18 +6,16 @@ Section* newSection(int numSection){
 	section->voitureGauche = NULL;
 	section->voitureDroite = NULL;
 	section->sectionVerrou = malloc(sizeof(pthread_mutex_t));
-	pthread_mutex_init(section->sectionVerrou,NULL);
 	return section;
 }
 
 int sortirSection(Section* section, Voiture* voiture)
 {
-	 if(voiture == NULL || section == NULL)return 0;
 	int returnValue;
 
-	pthread_mutex_lock(voiture->voitureVerrou);
+	pthread_mutex_lock(&voiture->voitureVerrou);
 	voiture->essenceActuelle--;
-	pthread_mutex_unlock(voiture->voitureVerrou);
+	pthread_mutex_unlock(&voiture->voitureVerrou);
 	
 	pthread_mutex_lock(section->sectionVerrou);
 	if(voiture == section->voitureGauche)
@@ -35,7 +33,6 @@ int sortirSection(Section* section, Voiture* voiture)
 
 int entrerSection(Section* section, Voiture* voiture)
 {
-	 if(voiture == NULL || section == NULL)return 0;
 	int returnValue;
 	pthread_mutex_lock(section->sectionVerrou);
 	if(section->voitureDroite == NULL)
@@ -55,12 +52,8 @@ int entrerSection(Section* section, Voiture* voiture)
 
 void freeSection(Section* section)
 {
-	 if(section != NULL)
-	 {
-		 pthread_mutex_destroy(section->sectionVerrou);
-		 free(section->sectionVerrou);
-		 free(section);
-	 }
+	free(section->sectionVerrou);
+	free(section);
 }
 
 void freeSections(Section** sections, int longueur)

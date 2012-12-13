@@ -8,7 +8,6 @@ Stand*  newStand()
 	 stand->voiture1 = NULL;
 	 stand->voiture2 = NULL;
 	 stand->standVoitureVerrou = malloc(sizeof(pthread_mutex_t));
-	 pthread_mutex_init(stand->standVoitureVerrou,NULL);
 	 stand->tempCharge = aleatoire(80000,10000);
 	 return stand;
 }
@@ -26,17 +25,14 @@ void freeStands(Stand** stands, int nbEquipe)
 {
 	 int i;
 	 for(i =0; i<nbEquipe; i++)
-	 {freeStand(stands[i]);}
+		  free(stands[i]);
 	 free(stands);
 }
 
 void freeStand(Stand* stand)
 {
 	 if(stand != NULL)
-	 {
-		  free(stand->standVoitureVerrou);
 		  free(stand);
-	 }
 }
 
 void* standardiser(void* arg)
@@ -46,15 +42,14 @@ void* standardiser(void* arg)
 	 while(1)
 	 {
 		  pthread_mutex_lock(stand->standVoitureVerrou);
-		  if(stand->voitureStand==NULL)
-		  {
-			   if(stand->voiture1 != NULL && stand->voiture1->nbTourEffectue<stand->circuit->nbTour)
-					if(stand->voiture1->essenceActuelle<limiteEssence)
-						 stand->voitureStand = stand->voiture1;
-			   if(stand->voiture2 != NULL && stand->voiture2->nbTourEffectue<stand->circuit->nbTour)
-					if(stand->voiture2->essenceActuelle<limiteEssence)
-						 stand->voitureStand = stand->voiture2;
-		  }
+		  if(stand->voitureStand==NULL && stand->voiture1->nbTourEffectue<stand->circuit->nbTour)
+			   if(stand->voiture1->essenceActuelle<limiteEssence)
+					stand->voitureStand = stand->voiture1;
+		  pthread_mutex_unlock(stand->standVoitureVerrou);
+		  pthread_mutex_lock(stand->standVoitureVerrou);
+		  if(stand->voitureStand==NULL && stand->voiture1->nbTourEffectue<stand->circuit->nbTour)
+			   if(stand->voiture1->essenceActuelle<limiteEssence)
+					stand->voitureStand = stand->voiture1;
 		  pthread_mutex_unlock(stand->standVoitureVerrou);
 		  usleep(200000);
 	 }
@@ -63,7 +58,7 @@ void* standardiser(void* arg)
 void entreeStand(Stand* stand)
 {
 	 printf("\tVoiture %d %d rentre au stand\n",stand->voitureStand->numEquipe,stand->voitureStand->numVoiture);
-	 usleep(stand->tempCharge);
+	 //usleep(stand->tempCharge);
 	 sleep(4);
 	 pthread_mutex_lock(stand->standVoitureVerrou);
 	 printf("\tVoiture %d %d sort du  stand\n",stand->voitureStand->numEquipe,stand->voitureStand->numVoiture);

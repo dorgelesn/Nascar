@@ -19,7 +19,7 @@ struct Voiture{
 	int numSection;
 	int essenceTotal;
 	int essenceActuelle;
-	pthread_mutex_t *voitureVerrou;
+	pthread_mutex_t voitureVerrou;
 };
 
 int tempsDeplacement(Voiture* voiture);
