@@ -18,7 +18,7 @@ void freeCircuit(Circuit *circuit)
 	free(circuit);
 }
 
-void getClassement(Circuit* circuit)
+void printCircuit(Circuit* circuit)
 {
 	clear();
 	int i,j;

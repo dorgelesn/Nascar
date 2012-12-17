@@ -9,5 +9,9 @@ int aleatoire(int a, int b);
 void erreur(const char* message, int retour);
 void clear();
 
+void fondVert();
+void fondGris(int equipe,int voiture);
+void fondGrisVide();
+
 #endif
 

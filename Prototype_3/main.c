@@ -61,7 +61,7 @@ void* printClassement()
 	 while(1)
 	 {
 		  pthread_mutex_lock(&pauseVerrou[NbEquipe*2]);
-		  getClassement(circuit);
+		  printCircuit(circuit);
 		  pthread_mutex_unlock(&pauseVerrou[NbEquipe*2]);
 		  usleep(300000);
 	 }
