@@ -2,10 +2,9 @@
 
 int showMenu()
 {
-	clear();
 	char re = ' ';
 	while(1){
-		clear();
+		 printf("\n\n\n\n");
 		if(re == 'q') return 0;
 		if(re == 'r') return 1;
 		showOption();

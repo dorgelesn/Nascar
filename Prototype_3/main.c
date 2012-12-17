@@ -6,12 +6,12 @@ Circuit *circuit;
 Equipe** equipes;
 Stand** stands;
 Voiture** classement;
-int indexClassement;
+int indexClassement,indexInverse;
 
 pthread_mutex_t  *pauseVerrou;
 pthread_mutex_t  *classementVerrou;
 
-pthread_t *pthread_classement;
+pthread_t *pthread_printCircuit;
 pthread_t **pthread_voiture;
 pthread_t **pthread_stand;
 
@@ -24,7 +24,9 @@ void signalSIGTSTP(int num)
 	 int i;
 	 if(num == SIGTSTP)
 	 {
+		  clear();
 		  for(i=0; i<NbEquipe*2+1; i++) pthread_mutex_lock(&pauseVerrou[i]);
+		  getClassement(NbEquipe,classement,equipes);
 		  switch(showMenu())
 		  {
 			   default:
@@ -56,7 +58,7 @@ void signalSIGINT(int num)
 	 return;
 }
 
-void* printClassement()
+void* threadPrintCircuit()
 {
 	 while(1)
 	 {
@@ -75,46 +77,53 @@ void* run(void* arg){
 	 int temps = tempsDeplacement(voiture);	
 	 int id = ((voiture->numEquipe-1)*2)+(voiture->numVoiture -1);
 	 voiture->essenceActuelle = voiture->essenceTotal;
+	 voiture->deplacementTotal = voiture->numSection;
 	 Stand* stand = stands[voiture->numEquipe-1];
 	 printf("Positionnement de la voiture %d de l'équipe %d\n",voiture->numVoiture,voiture->numEquipe);
 	 V(LOCKMAIN);
 	 P(LOCKFILS);
-	 while(voiture->nbTourEffectue < circuit->nbTour)
+	 while(voiture->nbTourEffectue < circuit->nbTour && voiture->essenceActuelle > 0)
 	 {
-		  if(voiture->essenceActuelle)
+		  pthread_mutex_lock(&pauseVerrou[id]);
+		  if(sectionVisee == 0 && stand->voitureStand == voiture)
 		  {
-			   pthread_mutex_lock(&pauseVerrou[id]);
-			   if(sectionVisee == 0 && stand->voitureStand == voiture)
-			   {
-					sortirSection(circuit->sections[sectionActuelle],voiture);
-					entreeStand(stand);
-					sectionActuelle = -1;
-			   }
-			   if(entrerSection(circuit->sections[sectionVisee],voiture))
-			   {
-					if(sectionActuelle != -1)
-					{sortirSection(circuit->sections[sectionActuelle],voiture);}
-					sectionActuelle = sectionVisee;
-					sectionVisee = sectionActuelle +1;
-					if(sectionVisee >= circuit->longueur)
-					{
-						 voiture->nbTourEffectue ++;
-						 sectionVisee =0;
-					}
-
-			   }
-			   pthread_mutex_unlock(&pauseVerrou[id]);
+			   sortirSection(circuit->sections[sectionActuelle],voiture);
+			   entreeStand(stand);
+			   sectionActuelle = -1;
 		  }
+		  if(entrerSection(circuit->sections[sectionVisee],voiture))
+		  {
+			   voiture->deplacementTotal ++;
+			   if(sectionActuelle != -1)
+			   {sortirSection(circuit->sections[sectionActuelle],voiture);}
+			   sectionActuelle = sectionVisee;
+			   sectionVisee = sectionActuelle +1;
+			   if(sectionVisee >= circuit->longueur)
+			   {
+					voiture->nbTourEffectue ++;
+					sectionVisee =0;
+			   }
+
+		  }
+		  pthread_mutex_unlock(&pauseVerrou[id]);
 		  usleep(temps);
 
 	 }
-	 printf("La voiture %d de l'équipe %d est arrivée\n",voiture->numVoiture,voiture->numEquipe);
-	 pthread_mutex_lock(classementVerrou);
-	 classement[indexClassement] = voiture;
-	 indexClassement ++;
-	 pthread_mutex_unlock(classementVerrou);
+
 	 sectionActuelle = voiture->numSection;
 	 sortirSection(circuit->sections[sectionActuelle],voiture);
+	 pthread_mutex_lock(classementVerrou);
+	 if(voiture->essenceActuelle)
+	 {
+		  classement[indexClassement] = voiture;
+		  indexClassement ++;
+		  voiture->numSection = -1;
+	 }else{
+		  classement[indexInverse] = voiture;
+		  indexInverse --;
+		  voiture->numSection = -2;
+	 }
+	 pthread_mutex_unlock(classementVerrou);
 	 pthread_exit(0);
 }
 
@@ -149,7 +158,8 @@ int main(int argc, char** argv)
 
 	 printf("INITIALISATION DU CLASSEMENT\n");
 	 classement = malloc(sizeof(Voiture*)*2*NbEquipe);
-	 indexClassement = 0;
+	 for(i=0; i<2*NbEquipe;i++) classement[i]=NULL;
+	 indexClassement = indexInverse = 0;
 
 	 printf("CREATION DES ÉQUIPES\n");
 	 equipes = creationEquipes(NbEquipe);
@@ -158,7 +168,7 @@ int main(int argc, char** argv)
 	 stands = creationStands(NbEquipe); 
 
 	 printf("INITIALISATION DES THREADSi\n");
-	 pthread_classement = malloc(sizeof(pthread_t));
+	 pthread_printCircuit = malloc(sizeof(pthread_t));
 	 pthread_voiture = malloc(sizeof(pthread_t*)*(NbEquipe*2));
 	 for(i =0; i<NbEquipe*2; i++)
 		  pthread_voiture[i] = malloc(sizeof(pthread_t));
@@ -192,14 +202,14 @@ int main(int argc, char** argv)
 	 for(i=0;i<NbEquipe*2; i++)P(LOCKMAIN);
 	 for(i=0;i<NbEquipe*2; i++)V(LOCKFILS);
 
-	 if(pthread_create(pthread_classement, NULL, printClassement,NULL))
+	 if(pthread_create(pthread_printCircuit, NULL, threadPrintCircuit,NULL))
 		  erreur("pthread_create",1);
 
 	 for(i=0; i<NbEquipe*2; i++)
 		  if(pthread_join(*pthread_voiture[i],NULL)!=0)
 			   erreur("pthread_join",1);
 
-	 if(pthread_cancel(*pthread_classement))
+	 if(pthread_cancel(*pthread_printCircuit))
 		  erreur("pthread_cancel",1);
 
 	 for(i=0; i<NbEquipe; i++)
@@ -208,11 +218,7 @@ int main(int argc, char** argv)
 
 	 clear();
 	 printf("Classement de la course\n");
-	 for(i=0; i<NbEquipe*2; i+=2)
-	 {
-		  printf("%d:%d \t",classement[i]->numEquipe,classement[i]->numVoiture);
-		  printf("%d:%d \n",classement[i+1]->numEquipe,classement[i+1]->numVoiture);
-	 }
+	 getClassement(NbEquipe,classement,equipes);
 	 freeMain();
 	 return 0;
 }
@@ -231,7 +237,7 @@ void freeMain()
 	 free(classementVerrou);
 	 pthread_mutex_destroy(pauseVerrou);
 	 free(pauseVerrou);
-	 free(pthread_classement);
+	 free(pthread_printCircuit);
 	 for(i=0; i<NbEquipe*2; i++)
 		  free(pthread_voiture[i]);
 	 free(pthread_voiture);
@@ -244,7 +250,7 @@ void freeMain()
 void killThread()
 {
 	 int i;
-	 if(pthread_cancel(*pthread_classement))
+	 if(pthread_cancel(*pthread_printCircuit))
 		  erreur("pthread_cancel",1);
 
 	 for(i=0; i<NbEquipe; i++)

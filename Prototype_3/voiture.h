@@ -19,6 +19,7 @@ struct Voiture{
 	int numSection;
 	int essenceTotal;
 	int essenceActuelle;
+	int deplacementTotal;
 	pthread_mutex_t *voitureVerrou;
 };
 

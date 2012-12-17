@@ -10,6 +10,7 @@ Voiture* newVoiture(int numEquipe,int numVoiture)
 	voiture->numSection = 0;
 	voiture->essenceTotal = 300;
 	voiture->essenceActuelle = 0;
+	voiture->deplacementTotal = 0;
 	voiture->voitureVerrou = malloc(sizeof(pthread_mutex_t));
 	pthread_mutex_init(voiture->voitureVerrou,NULL);
 	return voiture;
