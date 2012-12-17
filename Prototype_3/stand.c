@@ -43,15 +43,16 @@ void* standardiser(void* arg)
 {
 	 Stand* stand = (Stand*)arg;
 	 int limiteEssence = stand->voiture1->essenceTotal / 2;
+	 int nbTour = stand->circuit->nbTour;
 	 while(1)
 	 {
 		  pthread_mutex_lock(stand->standVoitureVerrou);
 		  if(stand->voitureStand==NULL)
 		  {
-			   if(stand->voiture1 != NULL && stand->voiture1->nbTourEffectue<stand->circuit->nbTour)
+			   if(stand->voiture1 != NULL && stand->voiture1->nbTourEffectue<nbTour)
 					if(stand->voiture1->essenceActuelle<limiteEssence)
 						 stand->voitureStand = stand->voiture1;
-			   if(stand->voiture2 != NULL && stand->voiture2->nbTourEffectue<stand->circuit->nbTour)
+			   if(stand->voiture2 != NULL && stand->voiture2->nbTourEffectue<nbTour)
 					if(stand->voiture2->essenceActuelle<limiteEssence)
 						 stand->voitureStand = stand->voiture2;
 		  }
@@ -66,6 +67,7 @@ void entreeStand(Stand* stand)
 	 usleep(stand->tempCharge);
 	 sleep(4);
 	 pthread_mutex_lock(stand->standVoitureVerrou);
+	 stand->voitureStand->essenceActuelle = stand->voitureStand->essenceTotal;
 	 printf("\tVoiture %d %d sort du  stand\n",stand->voitureStand->numEquipe,stand->voitureStand->numVoiture);
 	 stand->voitureStand = NULL;
 	 pthread_mutex_unlock(stand->standVoitureVerrou);

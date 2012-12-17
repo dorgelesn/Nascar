@@ -69,8 +69,8 @@ void* printClassement()
 
 void* run(void* arg){
 	 Voiture* voiture = (Voiture*)arg;
-	 int sectionVisee = voiture->numSection +1;
 	 int sectionActuelle = voiture->numSection;
+	 int sectionVisee = sectionActuelle +1;
 	 int i=0;
 	 int temps = tempsDeplacement(voiture);	
 	 int id = ((voiture->numEquipe-1)*2)+(voiture->numVoiture -1);
@@ -81,27 +81,30 @@ void* run(void* arg){
 	 P(LOCKFILS);
 	 while(voiture->nbTourEffectue < circuit->nbTour)
 	 {
-		  pthread_mutex_lock(&pauseVerrou[id]);
-		  if(sectionVisee == 0 && stand->voitureStand == voiture)
+		  if(voiture->essenceActuelle)
 		  {
-			   sortirSection(circuit->sections[sectionActuelle],voiture);
-			   entreeStand(stand);
-			   sectionActuelle = -1;
-		  }
-		  if(entrerSection(circuit->sections[sectionVisee],voiture))
-		  {
-			   if(sectionActuelle != -1)
-			   {sortirSection(circuit->sections[sectionActuelle],voiture);}
-			   sectionActuelle = sectionVisee;
-			   sectionVisee = sectionActuelle +1;
-			   if(sectionVisee >= circuit->longueur)
+			   pthread_mutex_lock(&pauseVerrou[id]);
+			   if(sectionVisee == 0 && stand->voitureStand == voiture)
 			   {
-					voiture->nbTourEffectue ++;
-					sectionVisee =0;
+					sortirSection(circuit->sections[sectionActuelle],voiture);
+					entreeStand(stand);
+					sectionActuelle = -1;
 			   }
+			   if(entrerSection(circuit->sections[sectionVisee],voiture))
+			   {
+					if(sectionActuelle != -1)
+					{sortirSection(circuit->sections[sectionActuelle],voiture);}
+					sectionActuelle = sectionVisee;
+					sectionVisee = sectionActuelle +1;
+					if(sectionVisee >= circuit->longueur)
+					{
+						 voiture->nbTourEffectue ++;
+						 sectionVisee =0;
+					}
 
+			   }
+			   pthread_mutex_unlock(&pauseVerrou[id]);
 		  }
-		  pthread_mutex_unlock(&pauseVerrou[id]);
 		  usleep(temps);
 
 	 }
