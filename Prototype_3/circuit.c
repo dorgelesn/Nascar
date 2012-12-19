@@ -98,22 +98,26 @@ void printCircuit(Circuit* circuit)
 void printClassement(Voiture** classement, int nbEquipe)
 {
 
-	 int i,num,equipe,voiture,essence,total;
+	 int i,num,equipe,voiture,essence,total,tour;
 	 for(i=0; i<nbEquipe*2; i++)
 	 {
-		 num = (nbEquipe*2)-(i);
+		 num = (nbEquipe*2)-i;
 		 equipe  = classement[i]->numEquipe;
 		 voiture = classement[i]->numVoiture;
+		 tour = classement[i]->nbTourEffectue;
 		 essence = classement[i]->essenceActuelle;
 		 total   = classement[i]->essenceTotal;
 		 if(classement[i]->numSection == -2)
 		 {
 			 printf("%*d) Équipe %*d, voiture %d , voiture hors course",2,num,2,equipe,voiture);	
-		 }else if(classement[i]->numSection == -1)
+		 }else if(classement[i]->numSection == -3)
 		 {
 			 printf("%*d) Équipe %*d, voiture %d , voiture arrivé",2,num,2,equipe,voiture);	
+		 }else if(classement[i]->numSection == -1)
+		 {
+			 printf("%*d) Équipe %*d, voiture %d , tour:%d, la voiture est au stand",2,num,2,equipe,voiture,tour);	
 		 }else{
-			 printf("%*d) Équipe %*d, voiture %d , essence %d/%d",2,num,2,equipe,voiture,essence,total);	
+			 printf("%*d) Équipe %*d, voiture %d , tour:%d, essence %d/%d",2,num,2,equipe,voiture,tour,essence,total);	
 		 }
 
 		 if(i%2 == 0)printf("\n");else printf("\t\t");

@@ -117,7 +117,7 @@ void* run(void* arg){
 	 {
 		  classement[indexClassement] = voiture;
 		  indexClassement ++;
-		  voiture->numSection = -1;
+		  voiture->numSection = -3;
 	 }else{
 		  classement[indexInverse] = voiture;
 		  indexInverse --;
