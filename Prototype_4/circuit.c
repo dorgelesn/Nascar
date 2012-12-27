@@ -95,13 +95,12 @@ void printCircuit(Circuit* circuit)
 }
 
 
-void printClassement(Voiture** classement, int nbEquipe)
+void printClassement(Voiture** classement, int nbVoiture)
 {
-
 	 int i,num,equipe,voiture,essence,total,tour;
-	 for(i=0; i<nbEquipe*2; i++)
+	 for(i=0; i<nbVoiture; i++)
 	 {
-		 num = (nbEquipe*2)-i;
+		 num = (nbVoiture)-i;
 		 if(classement[i] != NULL)
 		 {
 			  equipe  = classement[i]->numEquipe;
@@ -127,34 +126,41 @@ void printClassement(Voiture** classement, int nbEquipe)
 
 void getClassement(int nbEquipe, Voiture** classement, Equipe** equipes)
 {
+	 fflush(stdin);
+	 fflush(stdout);
+
 	 int i,j;
 	 int indexClassement =0;
 	 int accidentClassement = 0;
 	 Voiture** tmpClassement = malloc(sizeof(Voiture*)*2*nbEquipe);		
-	 //On récupère le classement fini
-	 for(i =0; i<2*nbEquipe; i++)
-	 {
-		  if(classement[i]!=NULL)
-		  {
-			   tmpClassement[i] = classement[i];
-		  }else{accidentClassement = 1;}
-		  if(!accidentClassement) indexClassement++;
-	 }
 	 Voiture** listNonClassee = malloc(sizeof(Voiture*)*2*nbEquipe);		
 	 for(i=0; i<2*nbEquipe; i++)listNonClassee[i] = NULL;
+
 	 int indexNonClassee=0;
-	 if(indexClassement !=  nbEquipe*2)
+	 for(i =0; i<2*nbEquipe; i++)
+	 {
+		  if(classement[i]!=NULL && classement[i]->numSection == -3)
+		  {
+			   tmpClassement[i] = classement[i];
+			   indexClassement++;
+		  }
+	 }
+
+	 Voiture* tmpVoiture;
+	 if(indexClassement < nbEquipe*2 )
 	 {
 		  for(i=0; i<nbEquipe; i++)
 		  {
-			    if(equipes[i]->voiture1->deplacementTotal >=0)
+			    tmpVoiture = equipes[i]->voiture1;
+			    if(tmpVoiture->numSection>=0 && tmpVoiture->deplacementTotal >=0)
 				{
-					 listNonClassee[indexNonClassee] = equipes[i]->voiture1;
+					 listNonClassee[indexNonClassee] = tmpVoiture;
 					 indexNonClassee++;	
 				}
-			    if(equipes[i]->voiture2->deplacementTotal >=0)
+			    tmpVoiture = equipes[i]->voiture2;
+			    if(tmpVoiture->numSection>=0 && tmpVoiture->deplacementTotal >=0)
 				{
-					 listNonClassee[indexNonClassee] = equipes[i]->voiture2;
+					 listNonClassee[indexNonClassee] = tmpVoiture;
 					 indexNonClassee++;	
 				}
 		  }
@@ -165,7 +171,7 @@ void getClassement(int nbEquipe, Voiture** classement, Equipe** equipes)
 			   indexClassement++;
 		  }
 	 }
-	 printClassement(tmpClassement,nbEquipe);
+	 printClassement(tmpClassement,indexClassement);
 	 free(listNonClassee);
 	 free(tmpClassement);
 }

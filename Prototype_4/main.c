@@ -79,6 +79,7 @@ void* run(void* arg){
 	 int id = ((voiture->numEquipe-1)*2)+(voiture->numVoiture -1);
 	 voiture->essenceActuelle = voiture->essenceTotal;
 	 voiture->deplacementTotal = voiture->numSection;
+	 voiture->nbTourEffectue = 0;
 	 Stand* stand = stands[voiture->numEquipe-1];
 	 V(LOCKMAIN);
 	 P(LOCKFILS);
@@ -107,9 +108,7 @@ void* run(void* arg){
 		  }
 		  pthread_mutex_unlock(&pauseVerrou[id]);
 		  usleep(temps);
-
 	 }
-
 	 sectionActuelle = voiture->numSection;
 	 sortirSection(circuit->sections[sectionActuelle],voiture);
 	 pthread_mutex_lock(classementVerrou);
@@ -158,14 +157,18 @@ int main(int argc, char** argv)
 	 stands = creationStands(NbEquipe); 
 
 	 ///////////////////////////////////////////////////////////////////////////
+	 ////Tour de qualification
+	 ///////////////////////////////////////////////////////////////////////////
 	 qualification = 1;
 	 printf("CREATION DU CIRCUIT\n");
 	 circuit = newCircuit();
+	 circuit->nbTour =1;
 
 	 printf("INITIALISATION DU CLASSEMENT\n");
 	 classement = malloc(sizeof(Voiture*)*NbEquipe*2);
 	 for(i=0; i<NbEquipe*2;i++) classement[i]=NULL;
-	 indexClassement = indexInverse = 0;
+	 indexClassement = 0;
+	 indexInverse = 2*NbEquipe -1;
 
 	 printf("INITIALISATION DES THREADSi\n");
 	 pthread_printCircuit = malloc(sizeof(pthread_t));
@@ -200,6 +203,12 @@ int main(int argc, char** argv)
 		  erreur("pthread_cancel",1);
 
 	 ///////////////////////////////////////////////////////////////////////////
+	 ////Entre deux tours
+	 ///////////////////////////////////////////////////////////////////////////
+	 
+	 int* ordre = malloc(sizeof(int)*NbEquipe);
+	 for(i=0; i<NbEquipe; i++)ordre[NbEquipe-1-i] = classement[i]->numEquipe - 1;
+
 	 freeCircuit(circuit); 
 	 free(classement);
 	 free(pthread_printCircuit);
@@ -207,6 +216,8 @@ int main(int argc, char** argv)
 		  free(pthread_voiture[i]);
 	 free(pthread_voiture);
 
+	 ///////////////////////////////////////////////////////////////////////////
+	 /////Course
 	 ///////////////////////////////////////////////////////////////////////////
 	 qualification = 0;
 	 printf("CREATION DU CIRCUIT\n");
@@ -217,9 +228,10 @@ int main(int argc, char** argv)
 	 printf("INITIALISATION DU CLASSEMENT\n");
 	 classement = malloc(sizeof(Voiture*)*2*NbEquipe);
 	 for(i=0; i<2*NbEquipe;i++) classement[i]=NULL;
-	 indexClassement = indexInverse = 0;
+	 indexClassement = 0;
+	 indexInverse = 2*NbEquipe -1;
 
-	 printf("INITIALISATION DES THREADSi\n");
+	 printf("INITIALISATION DES THREADS\n");
 	 pthread_printCircuit = malloc(sizeof(pthread_t));
 	 pthread_voiture = malloc(sizeof(pthread_t*)*(NbEquipe*2));
 	 for(i =0; i<NbEquipe*2; i++)
@@ -231,13 +243,14 @@ int main(int argc, char** argv)
 	 printf("POSITIONNEMENT DES VOITURES\n");
 	 for(i=0; i<NbEquipe; i++)
 	 {
-		  entrerSection(circuit->sections[i],equipes[i]->voiture1);
-		  if(pthread_create(pthread_voiture[2*i+0], NULL, run, (void*)equipes[i]->voiture1)<0)
+		  entrerSection(circuit->sections[i],equipes[ordre[i]]->voiture1);
+		  if(pthread_create(pthread_voiture[2*i+0], NULL, run, (void*)equipes[ordre[i]]->voiture1)<0)
 			   erreur("pthread_create",1);
-		  entrerSection(circuit->sections[i],equipes[i]->voiture2);
-		  if(pthread_create(pthread_voiture[2*i+1], NULL, run, (void*)equipes[i]->voiture2)<0)
+		  entrerSection(circuit->sections[i],equipes[ordre[i]]->voiture2);
+		  if(pthread_create(pthread_voiture[2*i+1], NULL, run, (void*)equipes[ordre[i]]->voiture2)<0)
 			   erreur("pthread_create",1);
 	 }
+	 free(ordre);
 
 	 printf("PRÉPARATION DES STANDS\n");
 	 for(i=0; i<NbEquipe; i++)
@@ -251,6 +264,7 @@ int main(int argc, char** argv)
 
 	 clear();
 	 printf("Presser sur une touche pour commencer la course\n");
+	 fflush(stdout);fflush(stdin);
 	 scanf("%c",&b);
 
 	 for(i=0;i<NbEquipe*2; i++)P(LOCKMAIN);
