@@ -4,11 +4,12 @@ int showMenu()
 {
 	char re = ' ';
 	while(1){
-		 printf("\n\n\n\n");
+		printf("\n\n\n\n");
 		if(re == 'q') return 0;
 		if(re == 'r') return 1;
 		showOption();
 		printf("\tvotre choix :\n");
+		fflush(stdin);
 		scanf("%c",&re);
 	}
 }

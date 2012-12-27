@@ -142,9 +142,7 @@ int main(int argc, char** argv)
 	 classementVerrou = malloc(sizeof(pthread_mutex_t));
 	 pthread_mutex_init(classementVerrou,NULL);
 
-
-
-	 printf("INITIALISATION DES SEMAPHORES\n");
+	 printf("INITIALISATION DES SIGNAUX\n");
 	 signal(SIGINT,signalSIGINT);
 	 signal(SIGTSTP,signalSIGTSTP);
 
@@ -214,6 +212,7 @@ int main(int argc, char** argv)
 	 printf("CREATION DU CIRCUIT\n");
 	 circuit = newCircuit();
 	 if(argc ==2)circuit->nbTour = atoi(argv[1]);
+	 else circuit->nbTour = 10;
 
 	 printf("INITIALISATION DU CLASSEMENT\n");
 	 classement = malloc(sizeof(Voiture*)*2*NbEquipe);
