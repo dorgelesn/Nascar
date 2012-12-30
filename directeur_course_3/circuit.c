@@ -6,6 +6,7 @@ Circuit* newCircuit()
 	 circuit->nbTour = 3;
 	 circuit->longueur = 100;
 	 circuit->sections = malloc(sizeof(Section*)*circuit->longueur);
+	 circuit->vitesseMax = 210;
 	 int i;
 	 for(i=0; i<circuit->longueur;i++)
 		  circuit->sections[i]=newSection(i);	

@@ -17,6 +17,7 @@ struct Circuit{
 	int longueur;
 	int nbTour;
 	Section** sections;
+	int vitesseMax;
 };
 
 Circuit* newCircuit();

@@ -2,16 +2,18 @@
 
 #define NbEquipe 21
 
-Circuit *circuit;
+Circuit* circuit;
 Equipe** equipes;
 Stand** stands;
 Voiture** classement;
+Directeur* directeur;
 int indexClassement,indexInverse;
 
 pthread_mutex_t  *pauseVerrou;
 pthread_mutex_t  *classementVerrou;
 
 pthread_t *pthread_printCircuit;
+pthread_t *pthread_directeur;
 pthread_t **pthread_voiture;
 pthread_t **pthread_stand;
 
@@ -19,6 +21,7 @@ int LOCKFILS;
 int LOCKMAIN;
 static pid_t mainPID;
 int qualification;
+int printCircuit_isRunning;
 
 void signalSIGTSTP(int num)
 {
@@ -32,11 +35,15 @@ void signalSIGTSTP(int num)
 		  {
 			   default:
 					clear();	
-			   case 0:
+			   case 0://quitter le programme
 					for(i=0; i<NbEquipe*2+1; i++) pthread_mutex_unlock(&pauseVerrou[i]);
 					kill(mainPID,SIGINT);
 					break;
-			   case 1:
+			   case 1://retour a la course
+					for(i=0; i<NbEquipe*2+1; i++) pthread_mutex_unlock(&pauseVerrou[i]);
+					break;
+			   case 2://Accident mineur
+					accidentMineur(directeur);
 					for(i=0; i<NbEquipe*2+1; i++) pthread_mutex_unlock(&pauseVerrou[i]);
 					break;
 		  }
@@ -61,7 +68,7 @@ void signalSIGINT(int num)
 
 void* threadPrintCircuit()
 {
-	 while(1)
+	 while(printCircuit_isRunning == 1)
 	 {
 		  pthread_mutex_lock(&pauseVerrou[NbEquipe*2]);
 		  printCircuit(circuit);
@@ -80,12 +87,17 @@ void* run(void* arg){
 	 voiture->essenceActuelle = voiture->essenceTotal;
 	 voiture->deplacementTotal = voiture->numSection;
 	 voiture->nbTourEffectue = 0;
+	 voiture->vitesseActuelle = voiture->vitesseMax;
 	 Stand* stand = stands[voiture->numEquipe-1];
 	 V(LOCKMAIN);
 	 P(LOCKFILS);
 	 while(voiture->nbTourEffectue < circuit->nbTour && voiture->essenceActuelle > 0)
 	 {
 		  pthread_mutex_lock(&pauseVerrou[id]);
+		  if(voiture->vitesseActuelle > circuit->vitesseMax)
+			   voiture->vitesseActuelle = circuit->vitesseMax;
+		  else
+			   voiture->vitesseActuelle = voiture->vitesseMax;
 		  if(sectionVisee == 0 && stand->voitureStand == voiture)
 		  {
 			   sortirSection(circuit->sections[sectionActuelle],voiture);
@@ -131,6 +143,7 @@ int main(int argc, char** argv)
 	 int i,j;
 	 char b;
 	 mainPID = getpid();
+	 pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 	 printf("INITIALISATION DE L'ALÉATOIRE\n");
 	 srand(time(NULL));
 
@@ -156,6 +169,10 @@ int main(int argc, char** argv)
 	 printf("CREATION DES STANDS\n");
 	 stands = creationStands(NbEquipe); 
 
+	 printf("CREATION DU DIRECTEUR DE COURSE\n");
+	 directeur = newDirecteur(equipes);
+	 pthread_directeur = NULL;
+
 	 ///////////////////////////////////////////////////////////////////////////
 	 ////Tour de qualification
 	 ///////////////////////////////////////////////////////////////////////////
@@ -163,6 +180,7 @@ int main(int argc, char** argv)
 	 printf("CREATION DU CIRCUIT\n");
 	 circuit = newCircuit();
 	 circuit->nbTour =1;
+	 directeur->circuit = circuit;
 
 	 printf("INITIALISATION DU CLASSEMENT\n");
 	 classement = malloc(sizeof(Voiture*)*NbEquipe*2);
@@ -170,7 +188,7 @@ int main(int argc, char** argv)
 	 indexClassement = 0;
 	 indexInverse = 2*NbEquipe -1;
 
-	 printf("INITIALISATION DES THREADSi\n");
+	 printf("INITIALISATION DES THREADS\n");
 	 pthread_printCircuit = malloc(sizeof(pthread_t));
 	 pthread_voiture = malloc(sizeof(pthread_t*)*(NbEquipe));
 	 for(i =0; i<NbEquipe; i++)
@@ -192,6 +210,7 @@ int main(int argc, char** argv)
 	 for(i=0;i<NbEquipe; i++)P(LOCKMAIN);
 	 for(i=0;i<NbEquipe; i++)V(LOCKFILS);
 
+	 printCircuit_isRunning = 1;
 	 if(pthread_create(pthread_printCircuit, NULL, threadPrintCircuit,NULL))
 		  erreur("pthread_create",1);
 
@@ -199,13 +218,15 @@ int main(int argc, char** argv)
 		  if(pthread_join(*pthread_voiture[i],NULL)!=0)
 			   erreur("pthread_join",1);
 
-	 if(pthread_cancel(*pthread_printCircuit))
-		  erreur("pthread_cancel",1);
+	 printCircuit_isRunning = 0;
 
 	 ///////////////////////////////////////////////////////////////////////////
 	 ////Entre deux tours
 	 ///////////////////////////////////////////////////////////////////////////
-	 
+
+	 clear();
+	 getClassement(NbEquipe,classement,equipes);
+
 	 int* ordre = malloc(sizeof(int)*NbEquipe);
 	 for(i=0; i<NbEquipe; i++)ordre[NbEquipe-1-i] = classement[i]->numEquipe - 1;
 
@@ -222,6 +243,7 @@ int main(int argc, char** argv)
 	 qualification = 0;
 	 printf("CREATION DU CIRCUIT\n");
 	 circuit = newCircuit();
+	 directeur->circuit = circuit;
 	 if(argc ==2)circuit->nbTour = atoi(argv[1]);
 	 else circuit->nbTour = 10;
 
@@ -262,6 +284,7 @@ int main(int argc, char** argv)
 			   erreur("pthread_create",1);
 	 }
 
+
 	 clear();
 	 printf("Presser sur une touche pour commencer la course\n");
 	 fflush(stdout);fflush(stdin);
@@ -270,15 +293,21 @@ int main(int argc, char** argv)
 	 for(i=0;i<NbEquipe*2; i++)P(LOCKMAIN);
 	 for(i=0;i<NbEquipe*2; i++)V(LOCKFILS);
 
+	 printCircuit_isRunning = 1;
 	 if(pthread_create(pthread_printCircuit, NULL, threadPrintCircuit,NULL))
+		  erreur("pthread_create",1);
+
+	 directeur->isRunning = 1;
+	 pthread_directeur = malloc(sizeof(pthread_t));
+	 if(pthread_create(pthread_directeur, NULL, thread_directeur,(void*)directeur))
 		  erreur("pthread_create",1);
 
 	 for(i=0; i<NbEquipe*2; i++)
 		  if(pthread_join(*pthread_voiture[i],NULL)!=0)
 			   erreur("pthread_join",1);
 
-	 if(pthread_cancel(*pthread_printCircuit))
-		  erreur("pthread_cancel",1);
+	 printCircuit_isRunning = 0;
+	 directeur->isRunning =0;
 
 	 for(i=0; i<NbEquipe; i++)
 		  if(pthread_cancel(*pthread_stand[i]))
@@ -294,29 +323,31 @@ int main(int argc, char** argv)
 void freeMain()
 {
 	 int i;
+
 	 printf("DÉCONSTRUCTION DE LA COURSE\n");
 	 freeCircuit(circuit);
 	 freeEquipes(equipes,NbEquipe);
 	 freeStands(stands,NbEquipe);
+	 freeDirecteur(directeur);
 	 free(classement);
-	 printf("SUPPRESSION DES COMPOSANTS\n");
-	 libereSem();
+
 	 if(classementVerrou)
 	 {
 		  pthread_mutex_destroy(classementVerrou);
 		  free(classementVerrou);
 	 }
+
 	 if(pauseVerrou)
 	 {
 		  pthread_mutex_destroy(pauseVerrou);
 		  free(pauseVerrou);
 	 }
-	 if(pthread_printCircuit)
-	 {
-		  free(pthread_printCircuit);
-	 }
 
-	 int max =NbEquipe;
+	 if(pthread_printCircuit)  free(pthread_printCircuit);
+
+	 if(pthread_directeur)     free(pthread_directeur);
+
+	 int max = NbEquipe;
 	 if(qualification =0) max *= 2;
 	 if(pthread_voiture)
 	 {
@@ -339,19 +370,21 @@ void freeMain()
 void killThread()
 {
 	 int i;
-	 if(pthread_cancel(*pthread_printCircuit))
-		  erreur("pthread_cancel",1);
+	 libereSem();
+	 printCircuit_isRunning =0;
 
 	 if(pthread_stand)
 	 {
-	 for(i=0; i<NbEquipe; i++)
-		  if(pthread_cancel(*pthread_stand[i]))
-			   erreur("pthread_cancel",1);
+		  for(i=0; i<NbEquipe; i++)
+			   if(pthread_stand[i] && pthread_cancel(*pthread_stand[i]))
+					erreur("pthread_cancel",1);
 	 }
+
 	 int max =NbEquipe;
 	 if(qualification =0) max *= 2;
 	 for(i=0; i<max; i++)
-		  if(pthread_cancel(*pthread_voiture[i]))
+		  if(pthread_voiture[i] && pthread_cancel(*pthread_voiture[i]))
 			   erreur("pthread_cancel",1);
+
 	 printf("TOUS LES THREADS ONT ÉTÉ TUÉS\n");
 }

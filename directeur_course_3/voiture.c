@@ -12,6 +12,7 @@ Voiture* newVoiture(int numEquipe,int numVoiture)
 	voiture->essenceActuelle = 0;
 	voiture->deplacementTotal = 0;
 	voiture->voitureVerrou = malloc(sizeof(pthread_mutex_t));
+	voiture->vitesseActuelle = voiture->vitesseMax;
 	pthread_mutex_init(voiture->voitureVerrou,NULL);
 	return voiture;
 }
@@ -28,5 +29,5 @@ void freeVoiture(Voiture* voiture)
 
 int tempsDeplacement(Voiture* voiture)
 {
-	return (VITESSE_MAX + 1 - voiture->vitesseMax)*100000;
+	return (VITESSE_MAX + 1 - voiture->vitesseActuelle)*100000;
 }
