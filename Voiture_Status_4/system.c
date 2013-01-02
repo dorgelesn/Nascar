@@ -4,9 +4,17 @@ void clear(){printf("\033c");}
 
 void fondVert(){printf("\033[42m     \033[0m");}
 
-void fondGris(int equipe, int voiture){
-	printf("\033[30m");
-	printf("\033[47m %*d:%d\033[0m", 2, equipe, voiture);
+void fondGris(int equipe, int voiture, int status){
+	if(status == -2)
+	{
+		 printf("\033[33m");
+		 printf("\033[47m %*d:%d\033[0m", 2, equipe, voiture);
+	}
+	else
+	{
+		 printf("\033[30m");
+		 printf("\033[47m %*d:%d\033[0m", 2, equipe, voiture);
+	}
 }
 
 

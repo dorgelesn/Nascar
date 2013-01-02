@@ -10,7 +10,7 @@ void erreur(const char* message, int retour);
 void clear();
 
 void fondVert();
-void fondGris(int equipe,int voiture);
+void fondGris(int equipe,int voiture, int status);
 void fondGrisVide();
 
 #endif

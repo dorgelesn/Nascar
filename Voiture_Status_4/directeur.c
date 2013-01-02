@@ -10,6 +10,7 @@ Directeur* newDirecteur(Equipe** equipes)
 	 directeur->evenements  = NULL;
 	 directeur->nbEvenement = 0;
 	 directeur->isRunning = 0;
+	 directeur->isQualification = 1;
 	 return directeur;
 }
 
@@ -122,7 +123,24 @@ void* thread_accidentMineur(void* arg)
 	 Evenement* evenement = (Evenement*) arg;
 	 evenement->status = 1;
 	 evenement->directeur->circuit->vitesseMax = 200;
+
+	 Voiture* tmp = NULL;
+	 while(tmp == NULL || tmp->status != 1)
+	 {
+		  int equipe = aleatoire(0,21);
+		  if(evenement->directeur->isQualification == 1)
+			   tmp = evenement->directeur->equipes[equipe]->voiture1;
+		  else
+		  {
+			   if(aleatoire(0,1) == 0)
+					tmp = evenement->directeur->equipes[equipe]->voiture1;
+			   else
+					tmp = evenement->directeur->equipes[equipe]->voiture2;
+		  }
+	 }
+	 if(tmp != NULL)tmp->status = -2;
 	 sleep(aleatoire(10,20));
+	 if(tmp != NULL)tmp->status = 1;
 	 evenement->directeur->circuit->vitesseMax = 210;
 	 evenement->status = 0;
 }

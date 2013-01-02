@@ -43,7 +43,7 @@ void printCircuit(Circuit* circuit)
 			   else tmpVoiture1 = tmpSection->voitureDroite;
 
 			   if(tmpVoiture1 == NULL) fondGrisVide();
-			   else fondGris(tmpVoiture1->numEquipe, tmpVoiture1->numVoiture);
+			   else fondGris(tmpVoiture1->numEquipe, tmpVoiture1->numVoiture,tmpVoiture1->status);
 		  }
 		  printf("\n");
 	 }
@@ -55,9 +55,9 @@ void printCircuit(Circuit* circuit)
 		  tmpVoiture2 = tmpSection->voitureDroite;
 
 		  if(tmpVoiture1 == NULL) fondGrisVide();
-		  else fondGris(tmpVoiture1->numEquipe, tmpVoiture1->numVoiture);
+		  else fondGris(tmpVoiture1->numEquipe, tmpVoiture1->numVoiture,tmpVoiture1->status);
 		  if(tmpVoiture2 == NULL) fondGrisVide();
-		  else fondGris(tmpVoiture2->numEquipe, tmpVoiture2->numVoiture);
+		  else fondGris(tmpVoiture2->numEquipe, tmpVoiture2->numVoiture,tmpVoiture2->status);
 
 		  for(j=0; j<21; j++){
 			   fondVert();
@@ -68,9 +68,9 @@ void printCircuit(Circuit* circuit)
 		  tmpVoiture2 = tmpSection->voitureDroite;
 
 		  if(tmpVoiture1 == NULL) fondGrisVide();
-		  else fondGris(tmpVoiture1->numEquipe, tmpVoiture1->numVoiture);
+		  else fondGris(tmpVoiture1->numEquipe, tmpVoiture1->numVoiture,tmpVoiture1->status);
 		  if(tmpVoiture2 == NULL) fondGrisVide();
-		  else fondGris(tmpVoiture2->numEquipe, tmpVoiture2->numVoiture);
+		  else fondGris(tmpVoiture2->numEquipe, tmpVoiture2->numVoiture,tmpVoiture2->status);
 		  printf("\n");
 	 }
 
@@ -83,7 +83,7 @@ void printCircuit(Circuit* circuit)
 			   else tmpVoiture1 = tmpSection->voitureDroite;
 
 			   if(tmpVoiture1 == NULL) fondGrisVide();
-			   else fondGris(tmpVoiture1->numEquipe, tmpVoiture1->numVoiture);
+			   else fondGris(tmpVoiture1->numEquipe, tmpVoiture1->numVoiture,tmpVoiture1->status);
 		  }
 		  printf("\n");
 	 }
@@ -110,14 +110,20 @@ void printClassement(Voiture** classement, int nbVoiture)
 			  essence = classement[i]->essenceActuelle;
 			  total   = classement[i]->essenceTotal;
 
-			  if(classement[i]->status == 0)
-				  printf("%*d) Équipe %*d, voiture %d , voiture hors course",2,num,2,equipe,voiture);	
-			  else if(classement[i]->status == 3)
+			  if(classement[i]->status == 3)
 				  printf("%*d) Équipe %*d, voiture %d , voiture arrivé",2,num,2,equipe,voiture);	
 			  else if(classement[i]->status == 2)
 				  printf("%*d) Équipe %*d, voiture %d , tour:%d, la voiture est au stand",2,num,2,equipe,voiture,tour);	
 			  else if(classement[i]->status == 1)
 				  printf("%*d) Équipe %*d, voiture %d , tour:%d, essence %d/%d",2,num,2,equipe,voiture,tour,essence,total);	
+			  else if(classement[i]->status == 0)
+				  printf("%*d) Équipe %*d, voiture %d , voiture hors course",2,num,2,equipe,voiture);	
+			  else if(classement[i]->status == -1)
+				  printf("%*d) Équipe %*d, voiture %d , voiture sans essence",2,num,2,equipe,voiture);	
+			  else if(classement[i]->status == -2)
+				  printf("%*d) Équipe %*d, voiture %d , accident légé",2,num,2,equipe,voiture);	
+			  else if(classement[i]->status == -3)
+				  printf("%*d) Équipe %*d, voiture %d , accient grave",2,num,2,equipe,voiture);	
 
 			  if(i%2 == 0)printf("\n");else printf("\t\t");
 		 }
@@ -154,13 +160,13 @@ void getClassement(int nbEquipe, Voiture** classement, Equipe** equipes)
 		  for(i=0; i<nbEquipe; i++)
 		  {
 			    tmpVoiture = equipes[i]->voiture1;
-			    if((tmpVoiture->status == 1 || tmpVoiture->status == 2) && tmpVoiture->deplacementTotal >=0)
+			    if(estEnCourse(tmpVoiture) && tmpVoiture->deplacementTotal >=0)
 				{
 					 listNonClassee[indexNonClassee] = tmpVoiture;
 					 indexNonClassee++;	
 				}
 			    tmpVoiture = equipes[i]->voiture2;
-			    if((tmpVoiture->status == 1 || tmpVoiture->status == 2) && tmpVoiture->deplacementTotal >=0)
+			    if(estEnCourse(tmpVoiture) && tmpVoiture->deplacementTotal >=0)
 				{
 					 listNonClassee[indexNonClassee] = tmpVoiture;
 					 indexNonClassee++;	

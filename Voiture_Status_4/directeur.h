@@ -23,6 +23,7 @@ struct Directeur{
 	Evenement** evenements;
 	int nbEvenement;
 	int isRunning;
+	int isQualification;
 };
 struct Evenement{
 	 int status;

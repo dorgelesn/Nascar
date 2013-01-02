@@ -13,7 +13,7 @@ typedef struct Section Section;
 typedef struct Voiture Voiture;
 struct Voiture{
 	//0:arrêt 1:Roule 2:Stand 3:Arrivé
-	//-1:Essence -2:accident
+	//-1:Essence -2:accidentMineur -3:accidentGrave
 	int status;
 	int numEquipe;
 	int numVoiture;
@@ -28,6 +28,7 @@ struct Voiture{
 };
 
 int tempsDeplacement(Voiture* voiture);
+int estEnCourse(Voiture* voiture);
 
 Voiture* newVoiture(int numEquipe, int numVoiture);
 void freeVoiture(Voiture *voiture);

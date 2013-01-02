@@ -92,7 +92,7 @@ void* run(void* arg){
 	 Stand* stand = stands[voiture->numEquipe-1];
 	 V(LOCKMAIN);
 	 P(LOCKFILS);
-	 while(voiture->status == 1 || voiture->status == 2)
+	 while(estEnCourse(voiture) == 1)
 	 {
 		  pthread_mutex_lock(&pauseVerrou[id]);
 
@@ -101,32 +101,35 @@ void* run(void* arg){
 			   voiture->vitesseActuelle = circuit->vitesseMax;
 		  else
 			   voiture->vitesseActuelle = voiture->vitesseMax;
-		  //Entrée au stand
-		  if(sectionVisee == 0 && stand->voitureStand == voiture)
+		  //Si la voiture n'est pas accidenté
+		  if(voiture->status != -2)
 		  {
-			   sortirSection(circuit->sections[sectionActuelle],voiture);
-			   entreeStand(stand);
-			   voiture->status = 2;
-		  }
-		  //Entrée dans la section
-		  if(entrerSection(circuit->sections[sectionVisee],voiture))
-		  {
-			   voiture->deplacementTotal ++;
-			   if(voiture->status != 2)
-			   {sortirSection(circuit->sections[sectionActuelle],voiture);}
-			   sectionActuelle = sectionVisee; sectionVisee ++;
-			   if(sectionVisee >= circuit->longueur)
+			   //Entrée au stand
+			   if(sectionVisee == 0 && stand->voitureStand == voiture)
 			   {
-					voiture->nbTourEffectue ++;
-					sectionVisee =0;
+					sortirSection(circuit->sections[sectionActuelle],voiture);
+					entreeStand(stand);
+					voiture->status = 2;
 			   }
-			   voiture->status = 1;
+			   //Entrée dans la section
+			   if(entrerSection(circuit->sections[sectionVisee],voiture))
+			   {
+					voiture->deplacementTotal ++;
+					if(voiture->status != 2)
+					{sortirSection(circuit->sections[sectionActuelle],voiture);}
+					sectionActuelle = sectionVisee; sectionVisee ++;
+					if(sectionVisee >= circuit->longueur)
+					{
+						 voiture->nbTourEffectue ++;
+						 sectionVisee =0;
+					}
+					voiture->status = 1;
+			   }
+			   //La voiture a fini la course
+			   if(voiture->nbTourEffectue >= circuit->nbTour) voiture->status = 3;
+			   //La voiture n'a plus d'essence
+			   if(voiture->essenceActuelle <= 0) voiture->status = -1;
 		  }
-		  //La voiture a fini la course
-		  if(voiture->nbTourEffectue > circuit->nbTour) voiture->status = 3;
-		  //La voiture n'a plus d'essence
-		  if(voiture->essenceActuelle <= 0) voiture->status = -1;
-
 		  pthread_mutex_unlock(&pauseVerrou[id]);
 		  usleep(temps);
 	 }
@@ -138,7 +141,7 @@ void* run(void* arg){
 	 {
 		  classement[indexClassement] = voiture;
 		  indexClassement ++;
-	 }else if(voiture->status == -1)
+	 }else if(voiture->status < 0)
 	 {
 		  classement[indexInverse] = voiture;
 		  indexInverse --;
@@ -191,6 +194,7 @@ int main(int argc, char** argv)
 	 circuit = newCircuit();
 	 circuit->nbTour =1;
 	 directeur->circuit = circuit;
+	 directeur->isQualification = 1;
 
 	 printf("INITIALISATION DU CLASSEMENT\n");
 	 classement = malloc(sizeof(Voiture*)*NbEquipe*2);
@@ -254,6 +258,7 @@ int main(int argc, char** argv)
 	 printf("CREATION DU CIRCUIT\n");
 	 circuit = newCircuit();
 	 directeur->circuit = circuit;
+	 directeur->isQualification = 0;
 	 if(argc ==2)circuit->nbTour = atoi(argv[1]);
 	 else circuit->nbTour = 10;
 

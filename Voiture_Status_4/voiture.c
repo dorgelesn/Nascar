@@ -28,6 +28,14 @@ void freeVoiture(Voiture* voiture)
 	}
 }
 
+int estEnCourse(Voiture* voiture)
+{
+	if(voiture->status == 1) return 1;
+	if(voiture->status == 2) return 1;
+	if(voiture->status == -2) return 1;
+	return 0;
+}
+
 int tempsDeplacement(Voiture* voiture)
 {
 	return (VITESSE_MAX + 1 - voiture->vitesseActuelle)*100000;
