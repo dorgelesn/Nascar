@@ -11,6 +11,7 @@ Directeur* newDirecteur(Equipe** equipes)
 	 directeur->nbEvenement = 0;
 	 directeur->isRunning = 0;
 	 directeur->isQualification = 1;
+	 directeur->accidentGrave = 0;
 	 return directeur;
 }
 
@@ -150,6 +151,47 @@ void accidentMineur(Directeur* directeur)
 	 pthread_mutex_lock(directeur->directeurVerrou);
 	 Evenement* evenement = newEvenement(directeur);
 	 if(pthread_create(evenement->thread_evenement, NULL,thread_accidentMineur,(void*)evenement)<0)
+		  erreur("pthread_create",1);
+	 addEvenement(directeur,evenement);
+	 pthread_mutex_unlock(directeur->directeurVerrou);
+}
+
+void* thread_accidentGrave(void* arg)
+{
+	 Evenement* evenement = (Evenement*) arg;
+	 evenement->status = 1;
+	 evenement->directeur->circuit->vitesseMax = 200;
+
+	 Voiture* tmp = NULL;
+	 while(tmp == NULL || tmp->status != 1)
+	 {
+		  int equipe = aleatoire(0,21);
+		  if(evenement->directeur->isQualification == 1)
+			   tmp = evenement->directeur->equipes[equipe]->voiture1;
+		  else
+		  {
+			   if(aleatoire(0,1) == 0)
+					tmp = evenement->directeur->equipes[equipe]->voiture1;
+			   else
+					tmp = evenement->directeur->equipes[equipe]->voiture2;
+		  }
+	 }
+	 int i;
+	 for(i=0; i<21; i++)
+	 {
+		  evenement->directeur->equipes[i]->voiture1->status = 0;
+		  evenement->directeur->equipes[i]->voiture2->status = 0;
+	 }
+	 if(tmp != NULL)tmp->status = -3;
+	 evenement->directeur->accidentGrave = 1;
+	 evenement->status = 0;
+}
+
+void accidentGrave(Directeur* directeur)
+{
+	 pthread_mutex_lock(directeur->directeurVerrou);
+	 Evenement* evenement = newEvenement(directeur);
+	 if(pthread_create(evenement->thread_evenement, NULL,thread_accidentGrave,(void*)evenement)<0)
 		  erreur("pthread_create",1);
 	 addEvenement(directeur,evenement);
 	 pthread_mutex_unlock(directeur->directeurVerrou);

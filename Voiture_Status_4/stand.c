@@ -63,12 +63,10 @@ void* standardiser(void* arg)
 
 void entreeStand(Stand* stand)
 {
-	 printf("\tVoiture %d %d rentre au stand\n",stand->voitureStand->numEquipe,stand->voitureStand->numVoiture);
 	 usleep(stand->tempCharge);
 	 sleep(2);
 	 pthread_mutex_lock(stand->standVoitureVerrou);
 	 stand->voitureStand->essenceActuelle = stand->voitureStand->essenceTotal;
-	 printf("\tVoiture %d %d sort du  stand\n",stand->voitureStand->numEquipe,stand->voitureStand->numVoiture);
 	 stand->voitureStand = NULL;
 	 pthread_mutex_unlock(stand->standVoitureVerrou);
 }

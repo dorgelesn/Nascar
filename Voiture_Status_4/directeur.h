@@ -24,6 +24,7 @@ struct Directeur{
 	int nbEvenement;
 	int isRunning;
 	int isQualification;
+	int accidentGrave;
 };
 struct Evenement{
 	 int status;
@@ -40,8 +41,13 @@ void freeEvenement(Evenement* evenement);
 void addEvenement(Directeur* directeur,Evenement* evenement);
 void cleanAllDirecteur(Directeur* directeur);
 void cleanDirecteur(Directeur* directeur);
+
 void* thread_directeur(void* arg);
 
+void* thread_accidentMineur(void* arg);
 void accidentMineur(Directeur* directeur);
+
+void* thread_accidentGrave(void* arg);
+void accidentGrave(Directeur* directeur);
 
 #endif 

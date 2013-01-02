@@ -46,6 +46,10 @@ void signalSIGTSTP(int num)
 					accidentMineur(directeur);
 					for(i=0; i<NbEquipe*2+1; i++) pthread_mutex_unlock(&pauseVerrou[i]);
 					break;
+			   case 3://Accident grave
+					accidentGrave(directeur);
+					for(i=0; i<NbEquipe*2+1; i++) pthread_mutex_unlock(&pauseVerrou[i]);
+					break;
 		  }
 		  signal(SIGTSTP,signalSIGTSTP);
 	 }
@@ -102,7 +106,7 @@ void* run(void* arg){
 		  else
 			   voiture->vitesseActuelle = voiture->vitesseMax;
 		  //Si la voiture n'est pas accidenté
-		  if(voiture->status != -2)
+		  if(voiture->status == 1 || voiture->status == 2)
 		  {
 			   //Entrée au stand
 			   if(sectionVisee == 0 && stand->voitureStand == voiture)
@@ -141,13 +145,12 @@ void* run(void* arg){
 	 {
 		  classement[indexClassement] = voiture;
 		  indexClassement ++;
-	 }else if(voiture->status < 0)
+	 }else if(directeur->accidentGrave == 0 && voiture->status < 0)
 	 {
 		  classement[indexInverse] = voiture;
 		  indexInverse --;
 	 }
 	 pthread_mutex_unlock(classementVerrou);
-
 	 pthread_exit(0);
 }
 
@@ -239,6 +242,12 @@ int main(int argc, char** argv)
 	 ///////////////////////////////////////////////////////////////////////////
 
 	 clear();
+	 if(directeur->accidentGrave == 1)
+	 {
+		printf("\nLa course a pris fin à cause d'un accident grave\n\n");
+		freeMain();
+		return 0;
+	 }
 	 getClassement(NbEquipe,classement,equipes);
 
 	 int* ordre = malloc(sizeof(int)*NbEquipe);
@@ -328,9 +337,14 @@ int main(int argc, char** argv)
 		  if(pthread_cancel(*pthread_stand[i]))
 			   erreur("pthread_cancel",1);
 
-	 clear();
-	 printf("Classement de la course\n");
-	 getClassement(NbEquipe,classement,equipes);
+	 if(directeur->accidentGrave == 1)
+	 {
+		 printf("La course a été annulé a cause d'un accident grave\n");
+	 }else{
+		  printf("Classement de la course\n");
+		  getClassement(NbEquipe,classement,equipes);
+	 }
+
 	 freeMain();
 	 return 0;
 }
