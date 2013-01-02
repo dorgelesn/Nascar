@@ -11,6 +11,7 @@
 #include <pthread.h>
 #include <signal.h>
 
+#include "directeur.h"
 #include "menu.h"
 #include "stand.h"
 #include "semaphore.c"
@@ -23,8 +24,11 @@ typedef struct Stand Stand;
 typedef struct Equipe Equipe;
 typedef struct Circuit Circuit;
 typedef struct Voiture Voiture;
+typedef struct Directeur Directeur;
 
+void signalSIGSTP(int num); 
 void signalSIGINT(int num); 
+void* threadPrintCircuit();
 void killThread();
 void freeMain();
 void* run(void* arg);

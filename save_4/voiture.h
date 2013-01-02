@@ -20,6 +20,7 @@ struct Voiture{
 	int essenceTotal;
 	int essenceActuelle;
 	int deplacementTotal;
+	int vitesseActuelle;
 	pthread_mutex_t *voitureVerrou;
 };
 

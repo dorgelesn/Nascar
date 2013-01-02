@@ -21,7 +21,7 @@ LDFLAGS= $(LIBRARY_PATH) -g -o
 LIBS=  
 
 # Les fichiers sources de l'application
-FILES= main.c circuit.c voiture.c system.c equipe.c section.c stand.c menu.c
+FILES= main.c circuit.c voiture.c system.c equipe.c section.c stand.c menu.c directeur.c
 
 #-----------
 # LES CIBLES
@@ -37,7 +37,7 @@ clean:
 # LES REGLES DE DEPENDANCE. Certaines sont implicites mais je recommande d'en 
 # mettre une par fichier source. 
 #-----------------------------------------------------------------------------
-main.o:main.c main.h voiture.h equipe.h circuit.h system.h menu.h
+main.o:main.c main.h voiture.h equipe.h circuit.h system.h menu.h directeur.h
 voiture.o:voiture.c voiture.h equipe.h
 equipe.o:equipe.c equipe.h voiture.h
 system.o:system.c system.h
@@ -45,6 +45,7 @@ circuit.o:circuit.c circuit.h section.h
 section.o:section.c section.h voiture.h
 stand.o:stand.c stand.h voiture.h
 menu.o:menu.c menu.h system.h
+directeur.o:directeur.c directeur.h circuit.h equipe.h voiture.h
 
 #---------------------------------
 # REGLES DE COMPILATION IMPLICITES

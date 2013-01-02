@@ -3,9 +3,10 @@
 Circuit* newCircuit()
 {
 	 Circuit *circuit = malloc(sizeof(Circuit));
-	 circuit->nbTour = 5;
+	 circuit->nbTour = 3;
 	 circuit->longueur = 100;
 	 circuit->sections = malloc(sizeof(Section*)*circuit->longueur);
+	 circuit->vitesseMax = 210;
 	 int i;
 	 for(i=0; i<circuit->longueur;i++)
 		  circuit->sections[i]=newSection(i);	
@@ -95,67 +96,72 @@ void printCircuit(Circuit* circuit)
 }
 
 
-void printClassement(Voiture** classement, int nbEquipe)
+void printClassement(Voiture** classement, int nbVoiture)
 {
-
 	 int i,num,equipe,voiture,essence,total,tour;
-	 for(i=0; i<nbEquipe*2; i++)
+	 for(i=0; i<nbVoiture; i++)
 	 {
-		 num = (nbEquipe*2)-i;
-		 equipe  = classement[i]->numEquipe;
-		 voiture = classement[i]->numVoiture;
-		 tour = classement[i]->nbTourEffectue;
-		 essence = classement[i]->essenceActuelle;
-		 total   = classement[i]->essenceTotal;
-		 if(classement[i]->numSection == -2)
+		 num = (nbVoiture)-i;
+		 if(classement[i] != NULL)
 		 {
-			 printf("%*d) Équipe %*d, voiture %d , voiture hors course",2,num,2,equipe,voiture);	
-		 }else if(classement[i]->numSection == -3)
-		 {
-			 printf("%*d) Équipe %*d, voiture %d , voiture arrivé",2,num,2,equipe,voiture);	
-		 }else if(classement[i]->numSection == -1)
-		 {
-			 printf("%*d) Équipe %*d, voiture %d , tour:%d, la voiture est au stand",2,num,2,equipe,voiture,tour);	
-		 }else{
-			 printf("%*d) Équipe %*d, voiture %d , tour:%d, essence %d/%d",2,num,2,equipe,voiture,tour,essence,total);	
-		 }
+			  equipe  = classement[i]->numEquipe;
+			  voiture = classement[i]->numVoiture;
+			  tour = classement[i]->nbTourEffectue;
+			  essence = classement[i]->essenceActuelle;
+			  total   = classement[i]->essenceTotal;
 
-		 if(i%2 == 0)printf("\n");else printf("\t\t");
+			  if(classement[i]->numSection == -2)
+				  printf("%*d) Équipe %*d, voiture %d , voiture hors course",2,num,2,equipe,voiture);	
+			  else if(classement[i]->numSection == -3)
+				  printf("%*d) Équipe %*d, voiture %d , voiture arrivé",2,num,2,equipe,voiture);	
+			  else if(classement[i]->numSection == -1)
+				  printf("%*d) Équipe %*d, voiture %d , tour:%d, la voiture est au stand",2,num,2,equipe,voiture,tour);	
+			  else
+				  printf("%*d) Équipe %*d, voiture %d , tour:%d, essence %d/%d",2,num,2,equipe,voiture,tour,essence,total);	
+
+			  if(i%2 == 0)printf("\n");else printf("\t\t");
+		 }
 	 }
 }
 
 
 void getClassement(int nbEquipe, Voiture** classement, Equipe** equipes)
 {
+	 fflush(stdin);
+	 fflush(stdout);
+
 	 int i,j;
 	 int indexClassement =0;
 	 int accidentClassement = 0;
 	 Voiture** tmpClassement = malloc(sizeof(Voiture*)*2*nbEquipe);		
-	 //On récupère le classement fini
-	 for(i =0; i<2*nbEquipe; i++)
-	 {
-		  if(classement[i]!=NULL)
-		  {
-			   tmpClassement[i] = classement[i];
-		  }else{accidentClassement = 1;}
-		  if(!accidentClassement) indexClassement++;
-	 }
-
 	 Voiture** listNonClassee = malloc(sizeof(Voiture*)*2*nbEquipe);		
 	 for(i=0; i<2*nbEquipe; i++)listNonClassee[i] = NULL;
+
 	 int indexNonClassee=0;
-	 if(indexClassement !=  nbEquipe*2)
+	 for(i =0; i<2*nbEquipe; i++)
+	 {
+		  if(classement[i]!=NULL && classement[i]->numSection == -3)
+		  {
+			   tmpClassement[i] = classement[i];
+			   indexClassement++;
+		  }
+	 }
+
+	 Voiture* tmpVoiture;
+	 if(indexClassement < nbEquipe*2 )
 	 {
 		  for(i=0; i<nbEquipe; i++)
 		  {
-			    if(equipes[i]->voiture1->deplacementTotal >=0)
+			    tmpVoiture = equipes[i]->voiture1;
+			    if(tmpVoiture->numSection>=0 && tmpVoiture->deplacementTotal >=0)
 				{
-					 listNonClassee[indexNonClassee] = equipes[i]->voiture1;
+					 listNonClassee[indexNonClassee] = tmpVoiture;
 					 indexNonClassee++;	
 				}
-			    if(equipes[i]->voiture2->deplacementTotal >=0)
+			    tmpVoiture = equipes[i]->voiture2;
+			    if(tmpVoiture->numSection>=0 && tmpVoiture->deplacementTotal >=0)
 				{
-					 listNonClassee[indexNonClassee] = equipes[i]->voiture2;
+					 listNonClassee[indexNonClassee] = tmpVoiture;
 					 indexNonClassee++;	
 				}
 		  }
@@ -166,7 +172,7 @@ void getClassement(int nbEquipe, Voiture** classement, Equipe** equipes)
 			   indexClassement++;
 		  }
 	 }
-	 printClassement(tmpClassement,nbEquipe);
+	 printClassement(tmpClassement,indexClassement);
 	 free(listNonClassee);
 	 free(tmpClassement);
 }
