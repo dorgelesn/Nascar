@@ -1,0 +1,132 @@
+\documentclass[a4paper, 11pt]{article}
+
+
+
+\input{modele}
+
+	\title{\vspace{5cm}Nascar \\ Rapport de projet \\ LO41 \\ \ \\}
+	\date{automne 2012\\ \ \\ \vspace*{3cm}
+	\includegraphics[width=4cm]{logo_utbm.png}
+	}
+	\author{Paul Locatelli - Pierre Rognon \\ \ \\ \ \\ Université de Technologies de Belfort-Montbéliard\\ \ \\}
+	
+\renewcommand{\appendixtocname}{Annexes}
+\renewcommand{\appendixpage}{\huge \textbf{Annexes} \normalsize}
+\renewcommand{\appendixname}{{\sffamily Annexe}} 	
+
+\begin{document}
+
+	
+	\maketitle
+	
+	\newpage
+	
+	\shorttoc{Sommaire}{1}
+	
+	\newpage
+	
+	\section*{Introduction}
+	
+	L'unité de valeur LO41 a pour but de familiariser les étudiants aux différents mécanismes d'un système d'exploitation. De nombreuses notions ont donc été vues lors de ce semestre. La plupart ont été mises en pratique dans le langage C, qu'on peut qualifier d'universel dans le cadre d'un système d'exploitation tel que Solaris, système auquel nous nous sommes rapportés tout au long de cette U.V. C'est pour illustrer et mettre en pratique les différents mécanismes vus les uns avec les autres qu'un projet a été proposé. Ce projet a pour contexte les courses américaines bien connues de Nascar. Ces courses mettent en jeu des voitures durant des courses longues voire très longues. L'objectif de ce projet est donc de modéliser une course de Nascar en s'appuyant sur ce qui a été appris tout au long du semestre. Une simulation doit pouvoir être proposée en collant le plus possible à la réalité de ces courses. \\
+	Pour mener à bien ce projet, un cahier des charges a dû être mis en œuvre. Ce dernier a permis par la suite le développement d'un programme répondant aux besoins énoncés. C'est ces deux points qui seront abordés durant ce rapport suivi d'un bref bilan du déroulement de ce projet.
+	
+	
+	\newpage
+	
+	\section{Cahier des charges}
+	
+	Le cahier des charges a inclut naturellement plusieurs parties au début du projet. En effet, une première partie doit décrire les besoins concernant les étapes d'avant développement, puis une seconde partie doit indiquer le cahier des charges fonctionnel de l'application, c'est-à-dire celui concernant le développement "pur". Nous aborderons donc tout d'abord les contraintes concernant l'étude du sujet et la conception relative à ce dernier puis nous décrirons le cahier des charges fonctionnel.
+	
+		\subsection{Étude du sujet}
+		
+		L'étude du sujet doit pour être menée à bien se diviser en étapes bien distinctes. Les besoins pour cette partie sont donc:
+		\begin{itemize}
+			\item d'effectuer des recherches sur le sujet qu'est la course de Nascar;
+			\item d'identifier les entités importantes concernant ces courses;
+			\item de bien comprendre les différentes règles de ce sport automobile.
+		\end{itemize}
+		
+		\subsection{Conception}
+		
+		La conception en elle-même demande plusieurs choses:
+		\begin{itemize}
+			\item tout d'abord, il doit être mis en place une arborescence bien précise du projet afin que celui-ci soit le plus clair possible;
+			\item ensuite, un choix doit être fait sur les différentes notions vu durant le semestre: toutes les notions ne sont pas forcément utilisées mais celles dont on a besoin doivent être reliées à une entité mise en avant dans l'étude du sujet;
+			\item enfin, les différentes interactions entre les entités doivent aussi être modélisées et être rapportées à une problématique bien précise du cours. \\
+		\end{itemize}
+		
+		Suite à la mise en œuvre de cette étape de conception, un cahier des charges a été établi.
+		
+		\subsection{Application}
+		
+		Le cahier des charges fonctionnel de l'application énonce des besoins généraux et d'autres plus précis, relatifs à l'utilisation même du logiciel.
+		
+			\paragraph{Besoins généraux}
+			
+			Ces besoins sont:
+			\begin{itemize}
+				\item l'application doit pouvoir simuler une course de Nascar; 
+				\item cette simulation doit comprendre une séance de qualifications ainsi que la course proprement dite;
+				\item elle doit gérer les équipes et les voitures qui courent dans la course;
+				\item elle doit gérer des incidents pouvant être provoqués par l'utilisateur;
+				\item un système de stand doit aussi être géré.
+			\end{itemize}
+			
+			\paragraph{Besoins spécifiques\\}
+			
+			Les besoins spécifiques se rapportent directement au fonctionnement de l'application dans son déroulement.
+			
+				\subparagraph{Début de la course}
+				Lors du lancement de l'application, on doit attendre le feu vert de l'utilisateur pour lancer la séance de qualifications. \\
+				Un second feu vert doit être donné lors du lancement réel de la course. De plus, l'utilisateur doit être informé du classement à l'issue de la séance de qualifications.
+			
+			
+				\subparagraph{Durant la course}
+				
+				L'application doit modéliser un affichage sommaire du circuit comprenant plusieurs informations:
+				\begin{itemize}
+					\item le placement des voitures sur le circuit: les voitures sont modélisées par leur numéro d'équipe et leur numéro de voiture dans l'équipe;
+					\item un affichage concernant les stands et la voiture éventuellement arrêtée à celui-ci;
+					\item si une voiture a subi un incident, elle doit être mise en évidence par sa couleur.\\
+				\end{itemize}
+				
+				L'application doit aussi permettre par une combinaison de touches la mise en pause de la course en cours. L'appui sur ces touches doit impliquer l'apparition d'un menu et d'informations.
+				\begin{itemize}
+					\item Les informations sont le classement de la course, ainsi que le niveau de carburant et le nombre de tours effectués par chaque voiture;
+					\item le menu quant à lui doit permettre de: quitter l'application, revenir à la course, intégrer un incident léger ou intégrer un accident grave.
+\end{itemize}			
+
+				Une autre combinaison de touches, celle par défaut du système d'exploitation doit permettre de quitter l'application proprement. L'appui sur une combinaison de touche doit informer l'utilisateur de ce qu'elle entraîne:
+				\begin{itemize}
+					\item pour la mise en pause de la course, 
+					\item pour la fin de l'application, un message doit indiquer que l'on quitte celle-ci et dire si la fin s'est bien déroulée.\\
+				\end{itemize}
+			
+			En fin de course, l'application doit afficher un classement, puis proposer de renouveler la course ou de quitter l'application.
+		
+	\newpage	
+	
+	\begin{appendix} 
+	\appendixpage
+	\addappheadtotoc
+	
+	\vspace*{1cm}
+		\chapter{\textbf{Annexe 1}}
+		
+		\begin{center}
+			\vspace*{3cm}
+			%\includegraphics[width=16cm]{DiagrammeDeCasDUtilisation.png}\\
+			\emph{Diagramme de cas d'utilisation}		
+		\end{center}
+		
+		\newpage
+		
+		
+
+
+		
+	\end{appendix}
+		
+	\tableofcontents
+		
+\end{document}
