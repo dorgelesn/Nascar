@@ -3,7 +3,7 @@
 Circuit* newCircuit()
 {
 	 Circuit *circuit = malloc(sizeof(Circuit));
-	 circuit->nbTour = 3;
+	 circuit->nbTour = 5;
 	 circuit->longueur = 100;
 	 circuit->sections = malloc(sizeof(Section*)*circuit->longueur);
 	 circuit->vitesseMax = 210;
@@ -19,13 +19,14 @@ void freeCircuit(Circuit *circuit)
 	 free(circuit);
 }
 
-void printCircuit(Circuit* circuit)
+void printCircuit(Circuit* circuit, Stand** stands)
 {
 	 clear();
 	 int i,j;
 	 Voiture* tmpVoiture1;
 	 Voiture* tmpVoiture2;
 	 Section* tmpSection;
+	 Stand* tmpStand;
 
 
 	 for(i=0; i<25; i++){
@@ -59,10 +60,30 @@ void printCircuit(Circuit* circuit)
 		  if(tmpVoiture2 == NULL) fondGrisVide();
 		  else fondGris(tmpVoiture2->numEquipe, tmpVoiture2->numVoiture,tmpVoiture2->status);
 
-		  for(j=0; j<21; j++){
-			   fondVert();
+		  for(j=0; j<5; j++){
+			 fondVert();
 		  }
 
+	  	  if( i>0 && i < 22 ){
+			 tmpStand = stands[i-1];
+			 printf("Stand n°%d\t", i);
+			
+			 if( tmpStand->voitureStand == NULL )
+				 printf("Aucune voiture.  ");
+			 else{
+				 printf("%*d:%d             ", 2, tmpStand->voiture1->numEquipe, tmpStand->voiture2->numVoiture);
+			 }
+
+			 for(j=0; j<10; j++){
+				fondVert();
+			 }
+
+		  }else{
+			  for(j=0; j<16; j++){
+				  fondVert();
+			  }
+		  }
+		
 		  tmpSection = circuit->sections[26+i];
 		  tmpVoiture1 = tmpSection->voitureGauche;
 		  tmpVoiture2 = tmpSection->voitureDroite;

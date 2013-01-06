@@ -8,6 +8,7 @@
 #include "equipe.h"
 #include "section.h"
 #include "system.h"
+#include "stand.h"
 
 typedef struct Section Section;
 typedef struct Voiture Voiture;
@@ -23,7 +24,7 @@ struct Circuit{
 Circuit* newCircuit();
 void freeCircuit(Circuit *circuit);
 
-void printCircuit(Circuit* circuit);
+void printCircuit(Circuit* circuit, Stand** stands);
 void printClassement(Voiture** classement, int nbEquipe);
 void getClassement(int nbEquipe, Voiture** classement, Equipe** equipes);
 void echanger(Voiture** tableau, int a, int b);

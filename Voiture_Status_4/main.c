@@ -75,7 +75,7 @@ void* threadPrintCircuit()
 	 while(printCircuit_isRunning == 1)
 	 {
 		  pthread_mutex_lock(&pauseVerrou[NbEquipe*2]);
-		  printCircuit(circuit);
+		  printCircuit(circuit, stands);
 		  pthread_mutex_unlock(&pauseVerrou[NbEquipe*2]);
 		  usleep(300000);
 	 }
