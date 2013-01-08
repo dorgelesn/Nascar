@@ -7,6 +7,7 @@ Stand*  newStand()
 	 stand->voitureStand = NULL;
 	 stand->voiture1 = NULL;
 	 stand->voiture2 = NULL;
+	 stand->occupation =NULL;
 	 stand->standVoitureVerrou = malloc(sizeof(pthread_mutex_t));
 	 pthread_mutex_init(stand->standVoitureVerrou,NULL);
 	 stand->tempCharge = aleatoire(80000,10000);
@@ -49,10 +50,10 @@ void* standardiser(void* arg)
 		  pthread_mutex_lock(stand->standVoitureVerrou);
 		  if(stand->voitureStand==NULL)
 		  {
-			   if(stand->voiture1 != NULL && stand->voiture1->nbTourEffectue<nbTour)
+			   if(stand->voiture1 != NULL && estEnCourse(stand->voiture1))
 					if(stand->voiture1->essenceActuelle<limiteEssence)
 						 stand->voitureStand = stand->voiture1;
-			   if(stand->voiture2 != NULL && stand->voiture2->nbTourEffectue<nbTour)
+			   if(stand->voiture2 != NULL && estEnCourse(stand->voiture2))
 					if(stand->voiture2->essenceActuelle<limiteEssence)
 						 stand->voitureStand = stand->voiture2;
 		  }
@@ -63,10 +64,14 @@ void* standardiser(void* arg)
 
 void entreeStand(Stand* stand)
 {
+	 pthread_mutex_lock(stand->standVoitureVerrou);
+	 stand->occupation = stand->voitureStand;
+	 pthread_mutex_unlock(stand->standVoitureVerrou);
 	 usleep(stand->tempCharge);
 	 sleep(2);
 	 pthread_mutex_lock(stand->standVoitureVerrou);
 	 stand->voitureStand->essenceActuelle = stand->voitureStand->essenceTotal;
+	 stand->occupation = NULL;
 	 stand->voitureStand = NULL;
 	 pthread_mutex_unlock(stand->standVoitureVerrou);
 }

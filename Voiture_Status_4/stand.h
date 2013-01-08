@@ -16,7 +16,8 @@ struct Stand{
 	 Circuit* circuit;
 	 Voiture* voiture1;
 	 Voiture* voiture2;
-	 Voiture* voitureStand;
+	 Voiture* voitureStand;//Voiture attendu au stand
+	 Voiture* occupation;  //Voiture actuellement au stand
 	 pthread_mutex_t* standVoitureVerrou;
 	 int tempCharge;
 };

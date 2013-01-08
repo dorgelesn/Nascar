@@ -30,6 +30,7 @@ void freeVoiture(Voiture* voiture)
 
 int estEnCourse(Voiture* voiture)
 {
+	if(voiture == NULL) return 0;
 	if(voiture->status == 1) return 1;
 	if(voiture->status == 2) return 1;
 	if(voiture->status == -2) return 1;

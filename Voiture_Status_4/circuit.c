@@ -68,7 +68,7 @@ void printCircuit(Circuit* circuit, Stand** stands)
 			 tmpStand = stands[i-1];
 			 printf("Stand n°%d\t", i);
 			
-			 if( tmpStand->voitureStand == NULL )
+			 if( tmpStand->occupation == NULL )
 				 printf("Aucune voiture.  ");
 			 else{
 				 printf("%*d:%d             ", 2, tmpStand->voiture1->numEquipe, tmpStand->voiture2->numVoiture);

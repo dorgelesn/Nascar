@@ -14,6 +14,7 @@ typedef struct Section Section;
 typedef struct Voiture Voiture;
 typedef struct Equipe Equipe;
 typedef struct Circuit Circuit;
+typedef struct Stand Stand;
 struct Circuit{
 	int longueur;
 	int nbTour;
