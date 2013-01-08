@@ -90,6 +90,7 @@
 	\newpage
 	
 	\section*{Introduction}
+	\addcontentsline{toc}{section}{Introduction}
 	
 	L'unité de valeur LO41 a pour but de familiariser les étudiants aux différents mécanismes d'un système d'exploitation. De nombreuses notions ont donc été vues lors de ce semestre. La plupart ont été mises en pratique dans le langage C, qu'on peut qualifier d'universel dans le cadre d'un système d'exploitation tel que Solaris, système auquel nous nous sommes rapportés tout au long de cette U.V. C'est pour illustrer et mettre en pratique les différents mécanismes vus les uns avec les autres qu'un projet a été proposé. Ce projet a pour contexte les courses américaines bien connues de Nascar. Ces courses mettent en jeu des voitures durant des courses longues voire très longues. L'objectif de ce projet est donc de modéliser une course de Nascar en s'appuyant sur ce qui a été appris tout au long du semestre. Une simulation doit pouvoir être proposée en collant le plus possible à la réalité de ces courses. \\
 	Pour mener à bien ce projet, un cahier des charges a dû être mis en œuvre. Ce dernier a permis par la suite le développement d'un programme répondant aux besoins énoncés. C'est ces deux points qui seront abordés durant ce rapport suivi d'un bref bilan du déroulement de ce projet.
@@ -191,10 +192,12 @@
 			\item chaque stand d'équipe ne peut accueillir qu'une seule voiture dans le même temps.
 		\end{itemize}
 		
+
+		\subsection{Développement de l'application}
 		
-		\subsection{Conception}
+			\paragraph{Architecture}
 		
-		La conception a été largement inspirée de l'étude du sujet. Elle avait pour but de mettre en place une arborescence des fichiers dans le projet et d'expliciter les liens entre ces fichiers. Ainsi, la plupart des entités ont été portées sur un fichier. L'architecture est donc la suivante:
+		Le développement a été largement inspirée de l'étude du sujet. Elle avait pour but de mettre en place une arborescence des fichiers dans le projet et d'expliciter les liens entre ces fichiers. Ainsi, la plupart des entités ont été portées sur un fichier. L'architecture est donc la suivante:
 		\begin{itemize}
 			\item circuit.c et circuit.h;
 			\item directeur.c et directeur.h;
@@ -213,6 +216,20 @@
 		\end{itemize}
 		
 		Un Makefile est aussi mis en place pour une compilation plus aisée lors du développement du projet.
+		
+			\paragraph{Agencement des informations}
+			
+		
+			
+		
+		
+				
+		
+	\section*{Conclusion}
+	\addcontentsline{toc}{section}{Conclusion}
+
+		
+	\newpage	
 		
 	\tableofcontents
 		
