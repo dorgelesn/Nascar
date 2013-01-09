@@ -1,4 +1,4 @@
-\documentclass[a4paper, 11pt]{article}
+\documentclass[a4paper, 11pt]{report}
 
 
 
@@ -10,6 +10,8 @@
 	%}
 	%\author{Paul Locatelli - Pierre Rognon \\ \ \\ \ \\ Université de Technologies de Belfort-Montbéliard\\ \ \\}
 	
+	\titleformat{\chapter}[hang]{\bf\huge}{\thechapter}{2pc}{}     
+
 \begin{document}
 
 \makeatletter
@@ -53,10 +55,10 @@
 	\vfill
 
 \begin{center}
-	\includegraphics[width=7cm]{logo_UTBM.jpg}
+	\includegraphics[width=5cm]{logo_UTBM.jpg}
 \end{center}
 
-\bas{}{Semestre d'automne 2012}{}
+\bas{}{Automne 2012}{}
 }%
 \cleardoublepage
 }
@@ -85,12 +87,11 @@
 	
 	\newpage
 	
-	\shorttoc{Sommaire}{1}
+	\shorttoc{Sommaire}{0}
 	
-	\newpage
 	
-	\section*{Introduction}
-	\addcontentsline{toc}{section}{Introduction}
+	\chapter*{Introduction}
+	\addcontentsline{toc}{chapter}{Introduction}
 	
 	L'unité de valeur LO41 a pour but de familiariser les étudiants aux différents mécanismes d'un système d'exploitation. De nombreuses notions ont donc été vues lors de ce semestre. La plupart ont été mises en pratique dans le langage C, qu'on peut qualifier d'universel dans le cadre d'un système d'exploitation tel que Solaris, système auquel nous nous sommes rapportés tout au long de cette U.V. C'est pour illustrer et mettre en pratique les différents mécanismes vus les uns avec les autres qu'un projet a été proposé. Ce projet a pour contexte les courses américaines bien connues de Nascar. Ces courses mettent en jeu des voitures durant des courses longues voire très longues. L'objectif de ce projet est donc de modéliser une course de Nascar en s'appuyant sur ce qui a été appris tout au long du semestre. Une simulation doit pouvoir être proposée en collant le plus possible à la réalité de ces courses. \\
 	Pour mener à bien ce projet, un cahier des charges a dû être mis en œuvre. Ce dernier a permis par la suite le développement d'un programme répondant aux besoins énoncés. C'est ces deux points qui seront abordés durant ce rapport suivi d'un bref bilan du déroulement de ce projet.
@@ -98,11 +99,11 @@
 	
 	\newpage
 	
-	\section{Cahier des charges}
+	\chapter{Cahier des charges}
 	
 	Le cahier des charges a inclut naturellement plusieurs parties au début du projet. En effet, une première partie doit décrire les besoins concernant les étapes d'avant développement, puis une seconde partie doit indiquer le cahier des charges fonctionnel de l'application, c'est-à-dire celui concernant le développement "pur". Nous aborderons donc tout d'abord les contraintes concernant l'étude du sujet et la conception relative à ce dernier puis nous décrirons le cahier des charges fonctionnel.
 	
-		\subsection{Étude du sujet}
+		\section{Étude du sujet}
 		
 		L'étude du sujet doit pour être menée à bien se diviser en étapes bien distinctes. Les besoins pour cette partie sont donc:
 		\begin{itemize}
@@ -111,7 +112,7 @@
 			\item de bien comprendre les différentes règles de ce sport automobile.
 		\end{itemize}
 		
-		\subsection{Conception}
+		\section{Conception}
 		
 		La conception en elle-même demande plusieurs choses:
 		\begin{itemize}
@@ -122,11 +123,11 @@
 		
 		Suite à la mise en œuvre de cette étape de conception, un cahier des charges a été établi.
 		
-		\subsection{Application}
+		\section{Application}
 		
 		Le cahier des charges fonctionnel de l'application énonce des besoins généraux et d'autres plus précis, relatifs à l'utilisation même du logiciel.
 		
-			\paragraph{Besoins généraux}
+			\subsection{Besoins généraux}
 			
 			Ces besoins sont:
 			\begin{itemize}
@@ -137,16 +138,16 @@
 				\item un système de stand doit aussi être géré.
 			\end{itemize}
 			
-			\paragraph{Besoins spécifiques\\}
+			\subsection{Besoins spécifiques}
 			
 			Les besoins spécifiques se rapportent directement au fonctionnement de l'application dans son déroulement.
 			
-				\subparagraph{Début de la course}
+				\paragraph{Début de la course}
 				Lors du lancement de l'application, on doit attendre le feu vert de l'utilisateur pour lancer la séance de qualifications. \\
 				Un second feu vert doit être donné lors du lancement réel de la course. De plus, l'utilisateur doit être informé du classement à l'issue de la séance de qualifications.
 			
 			
-				\subparagraph{Durant la course}
+				\paragraph{Durant la course}
 				
 				L'application doit modéliser un affichage sommaire du circuit comprenant plusieurs informations:
 				\begin{itemize}
@@ -170,11 +171,11 @@
 			En fin de course, l'application doit afficher un classement.
 			
 			
-	\section{Mise en œuvre}
+	\chapter{Mise en œuvre}
 	
 		La mise en œuvre a été menée en deux parties principales. La première a consisté à étudier le sujet, la seconde à développer l'application en elle-même. 
 		
-		\subsection{Étude du sujet}
+		\section{Étude du sujet}
 		
 		Lors de la rédaction du cahier des charges, l'étude du sujet devait permettre de faire diverses recherches sur les courses de Nascar et d'en ressortir les différentes entités importantes. Il en est donc ressorti plusieurs entités principales:
 		\begin{itemize}
@@ -186,16 +187,17 @@
 			\item les stands gèrent l'arrivée des voitures pour se ravitailler.\\
 		\end{itemize}
 		
-		Les différentes règles qui ont été mises en avant sont:
+		Les différentes situations problèmatiques qui ont été mises en avant sont:
 		\begin{itemize}
-			\item il ne peut y avoir que deux voitures de front sur le circuit;
-			\item chaque stand d'équipe ne peut accueillir qu'une seule voiture dans le même temps.
+			\item quand un voiture veut accéder à une section et que deux sont déjà présentes dans celle-ci;
+			\item quand deux voitures veulent aller dans le même temps dans une même section et qu'il y a déjà une voiture dans celle-ci;
+			\item quand une voiture veut accéder à un stand et qu'une autre est déjà dans celui-ci.\\
 		\end{itemize}
-		
+				
 
-		\subsection{Développement de l'application}
+		\section{Développement de l'application}
 		
-			\paragraph{Architecture}
+			\subsection{Architecture}
 		
 		Le développement a été largement inspirée de l'étude du sujet. Elle avait pour but de mettre en place une arborescence des fichiers dans le projet et d'expliciter les liens entre ces fichiers. Ainsi, la plupart des entités ont été portées sur un fichier. L'architecture est donc la suivante:
 		\begin{itemize}
@@ -217,16 +219,98 @@
 		
 		Un Makefile est aussi mis en place pour une compilation plus aisée lors du développement du projet.
 		
-			\paragraph{Agencement des informations}
+			\subsection{Agencement des informations}
 			
-		
+			Afin de gérer plus facilement les informations relatives aux différents objets manipulés dans l'application, nous avons décidé de mettre en place des structures. Les structures Voiture, Circuit, Stand, Equipe, Section, Directeur, Evenement ont donc été crées. La structure Evenement est contenue dans le fichier directeur.h. \\
+			Pour utiliser plus facilement les structures, une approche orientée objet a été effectuée. Des fonctions d'initialisation ont donc été mises en places pour créer les différentes structures.
 			
-		
-		
-				
-		
-	\section*{Conclusion}
-	\addcontentsline{toc}{section}{Conclusion}
+			\subsection{Vie des entités}
+			
+			En parallèle des structures, il a été décidé d'utiliser des threads pour matérialiser la "vie des entités". Ce choix permet ensuite de modéliser les situations d'interblocage en utilisant des mutex. \\
+			
+			\subsection{Description des entités}
+			
+			\paragraph{Circuit}
+			
+			Le circuit ne comporte pas de situation compliquée à gérer au niveau de l'implémentation. Il contient les informations sur le nombre de tours, la longueur du circuit et la vitesse maximum des voitures. Il permet seulement l'affichage du classement et du circuit.
+			
+			\paragraph{Section}
+			
+			La section est modélisée par une structure comprenant deux voitures. Ces deux voitures représentent les deux voies du circuit. Chaque section possède un verrou qui permet de bloquer l'arrivée d'une voiture si deux sont déjà présentes sur celle-ci. \\
+			Elle dispose de fonctions permettant d'entrer et de sortir une voiture. Ce sont ces fonctions qui gèrent le fonctionnement du mutex.
+			
+			\paragraph{Stand}
+			
+			Chaque stand est représenté par une structure et un thread. \\
+			La structure est liée aux voitures de l'équipe à laquelle le stand appartient. Elle possède aussi un paramètre permettant de savoir quelle voiture est attendue au stand et un autre permettant de savoir quelle voiture y est actuellement. Un mutex permet de se verrouiller durant la recherche de la prochaine voiture à attendre. \\
+			Le thread du stand effectue la recherche de la voiture à attendre. Une voiture est attribuée dès que l'une des deux voitures de l'équipe a atteint la moitié de sa réserve de carburant.
+			
+			
+			\paragraph{Voiture}
+			
+			Les voitures sont représentées tout comme les stands par une structure et un thread. \\
+			La structure contient des informations sur l'essence, la position de la voiture sur le circuit, la vitesse à laquelle elle se déplace, l'équipe et son numéro dans celle-ci et son statut (arrêt, en course, stand, arrivée, panne d'essence, incident mineur, accident grave).\\
+			Le thread quant à lui initialise les paramètres de la voiture, puis tant que la voiture peut rouler va tenter de la faire de section en section tout au long du circuit.
+			
+			\paragraph{Equipe}
+			
+			Toutes les équipes ont une structure. Cette structure est composée de deux voitures et d'un numéro qui qualifie l'équipe. L'équipe ne fait pas d'autres traitements. Elle permet simplement de regrouper deux voitures.
+			
+			\paragraph{Directeur et évènements}
+			
+			Les évènements peuvent être de deux types: incident mineur ou accident grave. Ils sont déclenchés par l'utilisateur depuis le menu de pause. Chaque évènement est représenté par une structure et un thread. La structure contient uniquement le thread et le statut de l'évènement (fini ou non).\\
+			 Le thread est utilisé uniquement lors d'un incident mineur. Il choisit aléatoirement une voiture qui va subir l'incident et l'arrête (passe en statut incident mineur). Il ralentit ensuite les autres voitures à la manière d'une voiture de sécurité. Puis il rétablit la situation normale après un temps tiré aléatoirement.\\
+			 
+			 Le directeur est composé d'un thread et d'une structure contenant la liste de tous les évènements en cours. Durant sa vie, le directeur va vérifier si les évènements se terminent ou non. Si c'est le cas pour un, il le détruit de façon propre.
+			
+			
+			
+			\subsection{Déroulement du programme}
+			
+			Le déroulement du programme a lieu dans le fichier main.c. 
+			\begin{itemize}
+				\item tout d'abord, les signaux sont redéfinis pour l'application. On change le traitant des signaux SIGTERM et SIGSTOP (correspondant respectivement aux raccourcis ctrl+c et ctrl+z).
+				\begin{itemize}
+				\item Pour SIGTERM, on ordonne l'arrêt propre immédiat de la course. Pour cela, on arrête les threads et on supprime tout ce qui a été crée dynamiquement;
+				\item pour SIGSTOP, on met en pause toutes les voitures sur le circuit à l'aide d'un verrou et on lance un menu pour l'utilisateur. Depuis celui-ci, il peut soit arrêter la course, soit la reprendre ou encore envoyer un incident ou accident;
+\end{itemize}				  
+				\item il crée les équipes et les voitures pour tout le long de l'application;
+				\item il crée le circuit et les stands pour la phase de qualification;
+				\item il crée les threads correspondant aux stands et aux voitures pour cette phase;
+				\item il exécute ensuite les threads des voitures puis ceux des stands et enfin un autre pour l'affichage (crée en même temps);
+				\item le programme se met alors en attente de l'arrivée de toutes les voitures (et donc la fin des threads des voitures);
+				\item il termine le thread d'affichage et ceux des stands;
+				\item il détruit toutes les données temporaires liées au qualifications sauf le classement qui est récupéré pour la grille de départ;
+				\item le même procédé est mis en place pour la course réelle.
+			\end{itemize}
+			
+			\subsection{Situations d'interblocage}
+			
+			Les situations d'interblocage concernaient les stands et les sections. 
+			\begin{itemize}
+				\item pour les sections, si une voiture veut accéder à une section déjà remplie, elle libère le verrou associé à la section qui permettait d'accéder aux variables de celle-ci puis se met en attente. Lorsqu'elle termine son attente elle tente à nouveau d'accéder à la section;
+				\item quand deux voitures veulent accéder en même temps à une section où il reste une seule place, le principe des mutex est utilisé mettant en place une règle de type FIFO. Le premier ayant été exécuté par le sytème accède à la section; l'autre se met en attente;
+				\item pour les stands, c'est celui-ci même qui choisit quelle voiture accédera à celui-ci. Pour faire ce choix, il regarde le niveau d'essence des deux voitures de l'équipe et prend celle dont le niveau est le plus critique. Pour qu'une voiture soit choisie, il faut que son niveau d'essence soit en dessous de la moitié du plein. Si aucune voiture n'a besoin d'aller au stand, celui-ci attend.
+			\end{itemize}
+			
+
+	\chapter{Problèmes rencontrés}
+	
+	Quelques problèmes sont apparus lors du développement de cette application. \\
+	
+	Tout d'abord, de nombreuses modifications ont du être faites au début du projet. Les mécanismes utilisés au début se sont en effet révélés impossibles à mettre en place et des modifications dans la conception ont du être faites. \\
+	Les processus ont été par exemple utilisés au départ mais devant la difficulté de mettre en place la mémoire partagée selon notre conception était peu aisé.	\\
+	
+	L'application ayant été implémentée sous des systèmes Linux, nous avons du porter le projet sous Solaris comme il était demandé. Cette opération n'a posé qu'un problème majeur avec l'utilisation des structures. Cependant, cela n'a pas été un problème important lors de projet. \\
+	
+	Quelques problèmes au niveau de l'affichage ont été rencontrés, le rafraichissement ne se faisant pas toujours correctement. Cependant, l'affichage n'étant pas le but premier du projet, nous avons préféré nous concentrer sur l'application en elle-même. Par chance, il semblerait que ces problèmes n'aient pas lieu sous Solaris.				
+	
+	\chapter*{Conclusion}
+	\addcontentsline{toc}{chapter}{Conclusion}
+	
+	Ce projet a permis d'exploiter de nombreuses notions vues lors de ce semestre en LO41. Il nous semble que la plupart des objectifs ont été accomplis même si toutes les fonctions demandées n'ont pas pu être mises en œuvre, faute de temps. L'application est cependant pleinement jouable puisque la course peut se dérouler en entier sans problème. \\
+	De plus, le fait d'avoir été dans des groupes de deux nous a permis, ayant des emplois du temps proches, de travailler en duo et de mettre en commun nos idées. Cela nous a aussi aidé à être plus efficaces notamment lors de l'étude du sujet qui demandait une compréhension aisée de tous les membres.
+	
 
 		
 	\newpage	
