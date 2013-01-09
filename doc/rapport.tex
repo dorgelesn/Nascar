@@ -4,17 +4,81 @@
 
 \input{modele}
 
-	\title{\vspace{5cm}Nascar \\ Rapport de projet \\ LO41 \\ \ \\}
-	\date{automne 2012\\ \ \\ \vspace*{3cm}
-	\includegraphics[width=4cm]{logo_utbm.png}
-	}
-	\author{Paul Locatelli - Pierre Rognon \\ \ \\ \ \\ Université de Technologies de Belfort-Montbéliard\\ \ \\}
+	%\title{\vspace{5cm}Nascar \\ Rapport de projet \\ LO41 \\ \ \\}
+	%\date{automne 2012\\ \ \\ \vspace*{3cm}
+	%\includegraphics[width=4cm]{logo_utbm.png}
+	%}
+	%\author{Paul Locatelli - Pierre Rognon \\ \ \\ \ \\ Université de Technologies de Belfort-Montbéliard\\ \ \\}
 	
-\renewcommand{\appendixtocname}{Annexes}
-\renewcommand{\appendixpage}{\huge \textbf{Annexes} \normalsize}
-\renewcommand{\appendixname}{{\sffamily Annexe}} 	
-
 \begin{document}
+
+\makeatletter
+	\def\clap#1{\hbox to 0pt{\hss #1\hss}}%
+	\def\ligne#1{%
+	\hbox to \hsize{%
+	\vbox{\centering #1}}}%
+	\def\haut#1#2#3{%
+	\hbox to \hsize{%
+	\rlap{\vtop{\raggedright #1}}%
+	\hss
+	\clap{\vtop{\centering #2}}%
+	\hss
+	\llap{\vtop{\raggedleft #3}}}}%
+	\def\bas#1#2#3{%
+	\hbox to \hsize{%
+	\rlap{\vbox{\raggedright #1}}%
+	\hss
+	\clap{\vbox{\centering #2}}%
+	\hss
+	\llap{\vbox{\raggedleft #3}}}}%
+	\def\maketitle{%
+	\thispagestyle{empty}\vbox to \vsize{%
+	\haut{}{\@blurb}{}
+	\vfill
+	\vspace{1cm}
+\begin{flushleft}
+	\usefont{OT1}{ptm}{m}{n}
+	\huge \@title
+\end{flushleft}
+	\par
+	\hrule height 4pt
+	\par
+\begin{flushright}
+	%\usefont{OT1}{phv}{m}{n}
+	\Large \@author
+	\par
+\end{flushright}
+	\vspace{1cm}
+	\vfill
+	\vfill
+
+\begin{center}
+	\includegraphics[width=7cm]{logo_UTBM.jpg}
+\end{center}
+
+\bas{}{Semestre d'automne 2012}{}
+}%
+\cleardoublepage
+}
+\def\date#1{\def\@date{#1}}
+\def\author#1{\def\@author{#1}}
+\def\title#1{\def\@title{#1}}
+\def\location#1{\def\@location{#1}}
+\def\blurb#1{\def\@blurb{#1}}
+\date{\today}
+\author{}
+\title{}
+
+% informations
+\location{Belfort}\blurb{}
+\makeatother
+\title{Nascar, rapport de projet}
+\author{\small{Paul \bsc{Locatelli} et Pierre \bsc{Rognon}}}
+\blurb{%
+	\textbf{LO41 - Architecture et utilisation des systèmes d'exploitation}\\
+	Université de Technologie de Belfort-Montbéliard
+}% 
+
 
 	
 	\maketitle
@@ -26,6 +90,7 @@
 	\newpage
 	
 	\section*{Introduction}
+	\addcontentsline{toc}{section}{Introduction}
 	
 	L'unité de valeur LO41 a pour but de familiariser les étudiants aux différents mécanismes d'un système d'exploitation. De nombreuses notions ont donc été vues lors de ce semestre. La plupart ont été mises en pratique dans le langage C, qu'on peut qualifier d'universel dans le cadre d'un système d'exploitation tel que Solaris, système auquel nous nous sommes rapportés tout au long de cette U.V. C'est pour illustrer et mettre en pratique les différents mécanismes vus les uns avec les autres qu'un projet a été proposé. Ce projet a pour contexte les courses américaines bien connues de Nascar. Ces courses mettent en jeu des voitures durant des courses longues voire très longues. L'objectif de ce projet est donc de modéliser une course de Nascar en s'appuyant sur ce qui a été appris tout au long du semestre. Une simulation doit pouvoir être proposée en collant le plus possible à la réalité de ces courses. \\
 	Pour mener à bien ce projet, un cahier des charges a dû être mis en œuvre. Ce dernier a permis par la suite le développement d'un programme répondant aux besoins énoncés. C'est ces deux points qui seront abordés durant ce rapport suivi d'un bref bilan du déroulement de ce projet.
@@ -102,30 +167,69 @@
 					\item pour la fin de l'application, un message doit indiquer que l'on quitte celle-ci et dire si la fin s'est bien déroulée.\\
 				\end{itemize}
 			
-			En fin de course, l'application doit afficher un classement, puis proposer de renouveler la course ou de quitter l'application.
+			En fin de course, l'application doit afficher un classement.
+			
+			
+	\section{Mise en œuvre}
+	
+		La mise en œuvre a été menée en deux parties principales. La première a consisté à étudier le sujet, la seconde à développer l'application en elle-même. 
+		
+		\subsection{Étude du sujet}
+		
+		Lors de la rédaction du cahier des charges, l'étude du sujet devait permettre de faire diverses recherches sur les courses de Nascar et d'en ressortir les différentes entités importantes. Il en est donc ressorti plusieurs entités principales:
+		\begin{itemize}
+			\item le circuit, qui est le support même de l'application. Il permet d'y placer les voitures et de les faire évoluer tout au long de la course;
+			\item les équipes, qui sont constituées chacune de deux voitures;
+			\item les voitures, qui sont le support de différents paramètres de la voiture tels que le niveau d'essence;
+			\item les sections, qui sont en fait des parties de circuit. Un circuit comporte alors 100 sections et chaque voiture passe d'une section à l'autre;
+			\item les directeurs de course, qui s'occupe de la gestion des évènements;
+			\item les stands gèrent l'arrivée des voitures pour se ravitailler.\\
+		\end{itemize}
+		
+		Les différentes règles qui ont été mises en avant sont:
+		\begin{itemize}
+			\item il ne peut y avoir que deux voitures de front sur le circuit;
+			\item chaque stand d'équipe ne peut accueillir qu'une seule voiture dans le même temps.
+		\end{itemize}
+		
+
+		\subsection{Développement de l'application}
+		
+			\paragraph{Architecture}
+		
+		Le développement a été largement inspirée de l'étude du sujet. Elle avait pour but de mettre en place une arborescence des fichiers dans le projet et d'expliciter les liens entre ces fichiers. Ainsi, la plupart des entités ont été portées sur un fichier. L'architecture est donc la suivante:
+		\begin{itemize}
+			\item circuit.c et circuit.h;
+			\item directeur.c et directeur.h;
+			\item equipe.c et equipe.h;
+			\item section.c et section.h;
+			\item stand.c et stand.h;
+			\item voiture.c et voiture.h;
+		\end{itemize}
+		
+		En plus de ces fichiers ont été mis en place:
+		\begin{itemize}
+			\item main.c et main.h: ce sont les fichiers principaux du jeu;
+			\item menu.c et menu.h: s'occupe de l'affichage d'un menu lorsque le jeu est mis en pause après l'envoi d'un signal par l'utilisateur;
+			\item semaphore.c et semaphore.h: permet d'utiliser les sémaphores;
+			\item system.c et system.h: s'occupe de plusieurs choses comme par exemple l'affichage ou le choix aléatoire d'une entité.\\
+		\end{itemize}
+		
+		Un Makefile est aussi mis en place pour une compilation plus aisée lors du développement du projet.
+		
+			\paragraph{Agencement des informations}
+			
+		
+			
+		
+		
+				
+		
+	\section*{Conclusion}
+	\addcontentsline{toc}{section}{Conclusion}
+
 		
 	\newpage	
-	
-	\begin{appendix} 
-	\appendixpage
-	\addappheadtotoc
-	
-	\vspace*{1cm}
-		\chapter{\textbf{Annexe 1}}
-		
-		\begin{center}
-			\vspace*{3cm}
-			%\includegraphics[width=16cm]{DiagrammeDeCasDUtilisation.png}\\
-			\emph{Diagramme de cas d'utilisation}		
-		\end{center}
-		
-		\newpage
-		
-		
-
-
-		
-	\end{appendix}
 		
 	\tableofcontents
 		
